@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>:: CRUSHER APP ::</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="./css/crusher.css" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Sidebar - Brand -->
+            <!-- <a class="sidebar-brand d-flex align-items-center justify-content-center" href="javascript:void(0);">
+        <div class="sidebar-brand-icon rotate-n-15">
+          <i class="fas fa-laugh-wink"></i>
+        </div>        
+      </a> -->
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <!-- <li class="nav-item active">
+        <a class="nav-link" href="javascript:void(0);">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span>Dashboard</span></a>
+      </li> -->
+
+            <!-- Divider -->
+            <!-- <hr class="sidebar-divider"> -->
+
+            <!-- Heading -->
+            <!-- <div class="sidebar-heading">
+        Interface
+      </div> -->
+
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMasters"
+                    aria-expanded="true" aria-controls="collapseMasters">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>Masters</span>
+                </a>
+                <div id="collapseMasters" class="collapse" aria-labelledby="headingMasters"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <!-- <h6 class="collapse-header">Custom Components:</h6> -->
+                        <a class="collapse-item" href="./manage-employee.html">Employee</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAccessibility"
+                    aria-expanded="true" aria-controls="collapseAccessibility">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>Accessibility</span>
+                </a>
+                <div id="collapseAccessibility" class="collapse" aria-labelledby="headingMasters"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <!-- <h6 class="collapse-header">Custom Components:</h6> -->
+                        <a class="collapse-item" href="javascript:void(0);">Timesheet</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Utilities Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReports"
+                    aria-expanded="true" aria-controls="collapseReports">
+                    <i class="fas fa-fw fa-wrench"></i>
+                    <span>Reports</span>
+                </a>
+                <div id="collapseReports" class="collapse" aria-labelledby="headingReports"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <!-- <h6 class="collapse-header">Custom Utilities:</h6> -->
+                        <!-- <a class="collapse-item" href="utilities-color.html">Colors</a>
+            <a class="collapse-item" href="utilities-border.html">Borders</a>
+            <a class="collapse-item" href="utilities-animation.html">Animations</a>
+            <a class="collapse-item" href="utilities-other.html">Other</a> -->
+                    </div>
+                </div>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+
+        </ul>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!-- Topbar Search -->
+
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+
+                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                        <li class="nav-item dropdown no-arrow d-sm-none">
+
+                        </li>
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="javascript:void(0);" id="userDropdown"
+                                role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">&nbsp;</span>
+                                <img class="img-profile rounded-circle"
+                                    src="https://source.unsplash.com/QAB-WJcbgJk/60x60">
+                            </a>
+                            <!-- Dropdown - User Information -->
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal"
+                                    data-target="#logoutModal">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Logout
+                                </a>
+                            </div>
+                        </li>
+
+                    </ul>
+
+                </nav>
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    <!-- Content Row -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card shadow">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Employee Details</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div id="message"></div>
+                                    <form class="user" id="frmEmployeeDetails" name="frmEmployeeDetails" action="post"
+                                        novalidate>
+                                        <div class="form-group row">
+                                            <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
+                                                <label class="font-weight-bold">First Name<span
+                                                        class="required">(*)</span></label>
+                                                <input type="text" class="form-control" id="txtFirst" name="first"
+                                                    placeholder="First Name" maxlength="25" autocomplete="off" required>
+                                                <span id="first_field_error"></span>
+                                            </div>
+                                            <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
+                                                <label class="font-weight-bold">Middle Name</label>
+                                                <input type="text" class="form-control" id="txtMiddle" name="middle"
+                                                    placeholder="Middle Name" maxlength="25" autocomplete="off">
+                                                <span id="middle_field_error"></span>
+                                            </div>
+                                            <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
+                                                <label class="font-weight-bold">Last Name<span
+                                                        class="required">(*)</span></label>
+                                                <input type="text" class="form-control" id="txtLast" name="last"
+                                                    placeholder="Last Name" maxlength="25" autocomplete="off" required>
+                                                <span id="last_field_error"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
+                                                <label class="font-weight-bold">Mobile No.<span
+                                                        class="required">(*)</span></label>
+                                                <input type="mobile" class="form-control" id="txtMobile" name="mobileNo"
+                                                    placeholder="Mobile No." maxlength="15" autocomplete="off" required>
+                                                <span id="mobile_field_error"></span>
+                                            </div>
+                                            <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
+                                                <!-- <div class="input-group-prepend">
+                                                    <span class="input-group-text" id="Birth Date">Birth Date</span>
+                                                </div> -->
+                                                <label class="font-weight-bold">Birth Date<span
+                                                        class="required">(*)</span></label>
+                                                <input type="date" class="form-control" id="txtBirthDate"
+                                                    name="birthDate" placeholder="Birth Date"
+                                                    aria-describedby="Birth Date" autocomplete="off" required>
+                                                <span id="birth_date_field_error"></span>
+                                            </div>
+                                            <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
+                                                <label class="font-weight-bold">Age<span
+                                                        class="required">(*)</span></label>
+                                                <input type="text" class="form-control" id="txtAge" name="age"
+                                                    placeholder="Age" maxlength="2" autocomplete="off" required>
+                                                <span id="age_field_error"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
+                                                <label class="font-weight-bold">Employee Type<span
+                                                        class="required">(*)</span></label>
+                                                <select class="form-control" id="txtType" name="type" required>
+                                                    <option value="">Select Type</option>
+                                                    <option value="Labour">Labour</option>
+                                                    <option value="Driver">Driver</option>
+                                                    <option value="Helper">Helper</option>
+                                                    <option value="Operator">Operator</option>
+                                                    <option value="Dealer">Dealer</option>
+                                                    <option value="Engineer">Engineer</option>
+                                                    <option value="Supervisor">Supervisor</option>
+                                                </select>
+                                                <span id="type_field_error"></span>
+                                            </div>
+                                            <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
+                                                <label class="font-weight-bold">Aadhar No.</label>
+                                                <input type="text" class="form-control" id="txtAadhar" name="aadhar"
+                                                    placeholder="Aadhar No." maxlength="12" autocomplete="off">
+                                                <span id="aadhar_field_error"></span>
+                                            </div>
+                                            <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
+                                                <label class="font-weight-bold">PAN No.</label>
+                                                <input type="text" class="form-control" id="txtPan" name="pan"
+                                                    placeholder="PAN No." maxlength="10" autocomplete="off">
+                                                <span id="pan_field_error"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
+                                                <label class="font-weight-bold">Employee Salary<span
+                                                        class="required">(*)</span></label>
+                                                <input type="text" class="form-control" id="txtSalary" name="salary"
+                                                    placeholder="Salary" maxlength="10" autocomplete="off" required>
+                                                <span id="salary_field_error"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-6 col-sm-6 mb-3 mb-sm-0">
+                                                <label class="font-weight-bold">Residential Address<span
+                                                        class="required">(*)</span></label>
+                                                <textarea class="form-control" id="txtResAdd" name="residentialAddress"
+                                                    rows="4" placeholder="Address..." autocomplete="no"
+                                                    required></textarea>
+                                                <span id="res_add_field_error"></span>
+                                            </div>
+                                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                                <label class="font-weight-bold">Permanent Address</label>
+                                                <textarea class="form-control" id="txtPermAdd" name="permanentAddress"
+                                                    rows="4" placeholder="Address..." autocomplete="no"></textarea>
+                                                <span id="perm_add_field_error"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-2 col-sm-6 mb-3 mb-sm-0">
+                                                <button type="button" class="btn btn-primary btn-user btn-block"
+                                                    onclick="fn_createEmployee()" data-dismiss="modal">Save</button>
+                                            </div>
+                                            <div class="col-md-2 col-sm-6 mb-3 mb-sm-0">
+                                                <a href="manage-employee.html"
+                                                    class="btn btn-secondary btn-user btn-block"
+                                                    data-dismiss="modal">Cancel</a>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- End of Main Content -->
+
+                <!-- Footer -->
+                <footer class="sticky-footer bg-white">
+                    <div class="container my-auto">
+                        <div class="copyright text-center my-auto">
+                            <span>Copyright &copy; 2020</span>
+                        </div>
+                    </div>
+                </footer>
+                <!-- End of Footer -->
+
+            </div>
+            <!-- End of Content Wrapper -->
+
+        </div>
+        <!-- End of Page Wrapper -->
+
+        <!-- Scroll to Top Button-->
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-angle-up"></i>
+        </a>
+
+        <!-- Logout Modal-->
+        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">Are you sure want to logout your current session?</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <a class="btn btn-primary" href="javascript:void(0);">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="loading">
+            <div id="load" class="loader"></div>
+        </div>
+
+        <!-- Bootstrap core JavaScript-->
+        <script src="./vendor/jquery/jquery.min.js"></script>
+        <script src="./vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Core plugin JavaScript-->
+        <script src="./vendor/jquery-easing/jquery.easing.min.js"></script>
+
+        <!-- Custom scripts for all pages-->
+        <script src="js/jquery.serializejson.js"></script>
+
+        <!-- Custom scripts for all pages-->
+        <script src="./js/crusher.js"></script>
+
+        <script src="./js/common.js"></script>
+
+        <script src="./js/employee.js"></script>
+
+
+</body>
+
+</html>
