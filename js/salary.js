@@ -50,6 +50,11 @@ function fn_searchEmployee() {
     emptyAlert('message');
     blankEmployeeDetails();
     var hasValidationError = checkIfEmptyAndValidate('txtSearch', 'search_field_error', 'Please provide employee name.');
+    if (!selectEmployee) {
+        hasValidationError = true;
+        var field = $('#search_field_error');
+        buildError(field, 'Please select valid employee name.', true);
+    }
     if (!hasValidationError) {
         showLoader();
         $.ajax({
@@ -82,12 +87,13 @@ function blankEmployeeDetails() {
     $('#txtMobile').html('');
     $('#txtSalary').html('');
     $('#txtSalaryType').val('');
+    $('#txtAdvSalary').val('');
 }
 
 function fn_process() {
     var hasValidationError = checkIfEmptyAndValidate('txtSalaryType', 'type_field_error', 'Please select type of Salary');
     if (!hasValidationError) {
-        var advFieldVisible = fn_showFields();
+        var advFieldVisible = fn_showFields(true);
         var requestUrl = '';
         var jsonObject = {};
         if (advFieldVisible) {
@@ -125,14 +131,28 @@ function fn_process() {
     }
 }
 
-function fn_showFields() {
+function fn_showFields(show) {
     var salType = $('#txtSalaryType');
-    if (salType && salType.val().trim() == 'ADV') {
-        $('#advDiv').show();
-    } else {
+    if (!show) {
+        $('#txtSearch').val('');
+        blankEmployeeDetails();
         $('#advDiv').hide();
-        return false;
+    } else {
+        if (salType && salType.val().trim() == 'ADV') {
+            $('#advDiv').show();
+            return true;
+        } else {
+            $('#advDiv').hide();
+            return false;
+        }
     }
-    return true;
+}
+
+function fn_cancel() {
+    $('#empDetails').hide();
+    var field = $('#type_field_error');
+    buildError(field, undefined, false);
+    fn_showFields(false);
+    emptyAlert('message');
 }
 

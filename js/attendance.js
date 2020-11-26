@@ -49,6 +49,11 @@ $(function (event) {
 function fn_searchEmployee() {
     emptyAlert('message');
     var hasValidationError = checkIfEmptyAndValidate('txtSearch', 'search_field_error', 'Please provide employee name.');
+    if (!selectEmployee) {
+        hasValidationError = true;
+        var field = $('#search_field_error');
+        buildError(field, 'Please select valid employee name.', true);
+    }
     if (!hasValidationError) {
         showLoader();
         $.ajax({
@@ -123,4 +128,11 @@ function fn_markOut() {
         hideLoader();
         buildAlert('message', error);
     });
+}
+
+function fn_cancel() {
+    blankEmployeeDetails();
+    $("#txtSearch").val('');
+    $('#empDetails').hide();
+    emptyAlert('message');
 }

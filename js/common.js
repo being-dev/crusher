@@ -14,29 +14,52 @@ endPointsMap.set('FULL_SAL_URI', '/api/v1/employee/salary/make-salary?action=MAK
 endPointsMap.set('ATT_REPORT_URI', '/api/v1/employee/attendance/list?action=ATTREPORT');
 endPointsMap.set('SAL_REPORT_URI', '/api/v1/employee/salary/list?action=SALREPORT');
 
+$(function () {
+    var url = window.location.pathname;
+    if (url && (url != '/' && url.indexOf('index') == -1)) {
+        authoriseUser();
+    }
+});
+
+var accessToken = undefined;
+
+function getToken() {
+    return window.localStorage.getItem('access_token');
+}
+
+function setToken(token) {
+    window.localStorage.setItem('access_token', token);
+    accessToken = token;
+}
+
 function emptyAlert(elem) {
     $('#' + elem).removeClass();
     $('#' + elem).html('');
 }
 
 function handleAlert(response) {
-    var alert = { code: response.status, message: response.responseText };
-    alert.visible = false;
-    alert.class = 'alert';
+    var alertBox = { code: response.status, message: response.responseText };
+    alertBox.visible = false;
+    alertBox.class = 'alert';
     if (response.status == 500) {
-        alert.class = 'alert-danger';
-        alert.severity = 'error';
+        alertBox.class = 'alert-danger';
+        alertBox.severity = 'error';
     } else if (response.status == 200) {
-        alert.severity = '';
-        alert.class = 'alert-success';
+        alertBox.severity = '';
+        alertBox.class = 'alert-success';
     }
-    return alert;
+    return alertBox;
 }
 
 function buildAlert(elem, response) {
-    var alert = handleAlert(response);
-    $('#' + elem).addClass('alert').addClass(alert.class);
-    $('#' + elem).html('<span>' + alert.message + '</span>');
+    var alertBox = handleAlert(response);
+    $('#' + elem).addClass('alert').addClass(alertBox.class);
+    $('#' + elem).html('<span>' + alertBox.message + '</span>');
+}
+
+function emptyAlert(elem) {
+    $('#' + elem).removeClass();
+    $('#' + elem).html('');
 }
 
 function showLoader() {
@@ -112,4 +135,31 @@ function buildError(errorField, errorMessage, toggle) {
         errorField.removeClass('error');
         errorField.html('');
     }
+}
+
+function _ajaxRequest(ajaxUrl, ajaxMethod, ajaxRequestData) {
+    return $.ajax({ url: ajaxUrl, type: ajaxMethod, data: ajaxRequestData });
+}
+
+function authoriseUser() {
+    if (!window.localStorage.getItem('access_token')) {
+        window.location.replace('index.html');
+    } else {
+        //window.location.href = 'blank.html';
+    }
+}
+
+function fn_logout() {
+    if (getToken()) {
+        window.localStorage.removeItem('access_token');
+        window.location.replace('index.html');
+    }
+}
+
+function fn_setHtml(elem, html) {
+    $('#' + elem).html(html);
+}
+
+function fn_setVal(elem, val) {
+    $('#' + elem).val(val);
 }

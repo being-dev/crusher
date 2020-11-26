@@ -10,6 +10,7 @@ function loadEmployees() {
 }
 
 function _ajaxCallForEmployees() {
+    var alertBox = {};
     $.ajax({
         url: buildUrl(endPointsMap.get('EMP_FIND_ALL_URI')),
         type: 'POST'
@@ -21,9 +22,9 @@ function _ajaxCallForEmployees() {
         hideLoader();
     }).fail(function (error) {
         hideLoader();
-        alert = handleAlert(error);
-        $('#message').addClass('alert').addClass(alert.class);
-        $('#message').html('<span>' + alert.message + '</span>');
+        alertBox = handleAlert(error);
+        $('#message').addClass('alert').addClass(alertBox.class);
+        $('#message').html('<span>' + alertBox.message + '</span>');
     });
 }
 
@@ -68,6 +69,7 @@ function fn_closeEmployeeDialog() {
 }
 
 function fn_remove(id) {
+    var alertBox = {};
     showLoader();
     $.ajax({
         url: buildUrl(endPointsMap.get('EMP_REMOVE_URI')),
@@ -76,9 +78,9 @@ function fn_remove(id) {
     }).done(function (response) {
     }).fail(function (error) {
         hideLoader();
-        alert = handleAlert(error);
-        $('#message').addClass('alert').addClass(alert.class);
-        $('#message').html('<span>' + alert.message + '</span>');
+        alertBox = handleAlert(error);
+        $('#message').addClass('alert').addClass(alertBox.class);
+        $('#message').html('<span>' + alertBox.message + '</span>');
     });;
 }
 
@@ -97,7 +99,7 @@ function fn_modify(id) {
 
 function fn_createEmployee() {
     var formData = $('#frmEmployeeDetails').serializeJSON();
-    var alert = {};
+    var alertBox = {};
     var hasErrors = validateForm();
     if (!hasErrors) {
         showLoader();
@@ -108,21 +110,21 @@ function fn_createEmployee() {
         }).done(function (response) {
             hideLoader();
             resetErrorFields();
-            alert = handleAlert(response);
-            $('#modalMessage').addClass('alert').addClass(alert.class);
-            $('#modalMessage').html('<span>' + alert.message + '</span>');
+            alertBox = handleAlert(response);
+            $('#modalMessage').addClass('alert').addClass(alertBox.class);
+            $('#modalMessage').html('<span>' + alertBox.message + '</span>');
         }).fail(function (error) {
             hideLoader();
-            alert = handleAlert(error);
-            $('#modalMessage').addClass('alert').addClass(alert.class);
-            $('#modalMessage').html('<span>' + alert.message + '</span>');
+            alertBox = handleAlert(error);
+            $('#modalMessage').addClass('alert').addClass(alertBox.class);
+            $('#modalMessage').html('<span>' + alertBox.message + '</span>');
         });
     }
 }
 
 function fn_updateEmployee() {
     var formData = $('#frmEmployeeDetails').serializeJSON();
-    var alert = {};
+    var alertBox = {};
     var hasErrors = validateForm();
     if (!hasErrors) {
         showLoader();
@@ -132,20 +134,20 @@ function fn_updateEmployee() {
             data: JSON.stringify(formData)
         }).done(function (response) {
             hideLoader();
-            alert = handleAlert(response);
-            $('#modalMessage').addClass('alert').addClass(alert.class);
-            $('#modalMessage').html('<span>' + alert.message + '</span>');
+            alertBox = handleAlert(response);
+            $('#modalMessage').addClass('alert').addClass(alertBox.class);
+            $('#modalMessage').html('<span>' + alertBox.message + '</span>');
 
             //_ajaxCallForEmployees();
 
-            $('#employeesTable').dataTable().fnClearTable();
-            $('#employeesTable').dataTable().fnAddData(null);
+            //$('#employeesTable').dataTable().fnClearTable();
+            //$('#employeesTable').dataTable().fnAddData(null);
 
         }).fail(function (error) {
             hideLoader();
-            alert = handleAlert(error);
-            $('#modalMessage').addClass('alert').addClass(alert.class);
-            $('#modalMessage').html('<span>' + alert.message + '</span>');
+            alertBox = handleAlert(error);
+            $('#modalMessage').addClass('alert').addClass(alertBox.class);
+            $('#modalMessage').html('<span>' + alertBox.message + '</span>');
         });
     }
 }
