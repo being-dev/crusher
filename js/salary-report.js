@@ -16,9 +16,9 @@ function fn_search() {
             hideLoader();
             var tbody = prepareTableBody(response.SAL_INFO, attendanceDate);
             $('#salInfoTbody').html(tbody);
-            fn_setHtml('mearnamount', response.ME);
-            fn_setHtml('aearnamount', response.ME);
-            fn_setHtml('mexpamount', response.YE);
+            fn_setHtml('mearnamount', 0);
+            fn_setHtml('aearnamount', 0);
+            fn_setHtml('mexpamount', response.ME);
             fn_setHtml('aexpamount', response.YE);
 
             showDivs();
