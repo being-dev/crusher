@@ -54,7 +54,7 @@ function prepareTableBody(employees, attendanceDate) {
             if (value.present) {
                 tbody += '<a href="javascript:void(0);" title="Present" alt="Present" class="btn btn-primary btn-circle"><i class="fas fa-check-circle"></i></a>';
             } else {
-                tbody += '<a href="javascript:void(0);" title="Absent" alt="Absent" class="btn btn-danger btn-circle"><i class="fas fa-check-circle"></i></a>';
+                tbody += '<a href="javascript:void(0);" title="Absent" alt="Absent" class="btn btn-danger btn-circle"><i class="fas fa-times-circle"></i></a>';
             }
             tbody += '</td>';
             tbody += '</tr>';
