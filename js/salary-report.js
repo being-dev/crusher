@@ -13,14 +13,14 @@ function fn_search() {
             type: 'POST',
             data: JSON.stringify({ date: attendanceDate })
         }).done(function (response) {
+            console.log(response);
             hideLoader();
-            var tbody = prepareTableBody(response.SAL_INFO, attendanceDate);
+            var tbody = prepareTableBody(response.EMP_SAL_INFO, attendanceDate);
             $('#salInfoTbody').html(tbody);
-            fn_setHtml('mearnamount', 0);
-            fn_setHtml('aearnamount', 0);
-            fn_setHtml('mexpamount', response.ME);
-            fn_setHtml('aexpamount', response.YE);
-
+            fn_setHtml('totalamount', response.PRE_DAY_SAL_EXPENSE);
+            fn_setHtml('advamount', response.ADV_SAL_EXPENSE);
+            fn_setHtml('netexpamount', response.NET_SAL_EXPENSE);
+            
             showDivs();
 
         }).fail(function (error) {
@@ -32,18 +32,16 @@ function fn_search() {
 }
 
 function showDivs() {
-    $('#mearnDiv').show();
-    $('#aearnDiv').show();
-    $('#mexpDiv').show();
-    $('#aexpDiv').show();
+    $('#totalamountDiv').show();
+    $('#advamountnDiv').show();
+    $('#netexpamountDiv').show();
     $('#empSalDetailsDiv').show();
 }
 
 function hideDivs() {
-    $('#mearnDiv').hide();
-    $('#aearnDiv').hide();
-    $('#mexpDiv').hide();
-    $('#aexpDiv').hide();
+    $('#totalamountDiv').hide();
+    $('#advamountnDiv').hide();
+    $('#netexpamountDiv').hide();
     $('#empSalDetailsDiv').hide();
 }
 
@@ -59,22 +57,28 @@ function prepareTableBody(salaries, month) {
             tbody += value.position
             tbody += '</td>';
             tbody += '<td>';
-            if (!value.salaryDate) value.salaryDate = '';
-            tbody += value.salaryDate;
+            tbody += value.currentSalary;
             tbody += '</td>';
             tbody += '<td>';
-            if (!value.salary) value.salary = 0;
+            tbody += value.dailyWages;
+            tbody += '</td>';
+            tbody += '<td>';
+            tbody += value.presentDays;
+            tbody += '</td>';
+            tbody += '<td>';
             tbody += value.salary;
             tbody += '</td>';
             tbody += '<td>';
-            if (!value.advanceSalary) value.advanceSalary = 0;
             tbody += value.advanceSalary;
-            tbody += '</td>';
+            tbody += '</td>';  
+            tbody += '<td>';
+            tbody += value.netSalary;
+            tbody += '</td>';                      
             tbody += '</tr>';
         });
     } else {
         tbody += '<tr>';
-        tbody += '<td  colspan="5" class="text-center">';
+        tbody += '<td  colspan="7" class="text-center">';
         tbody += 'No data available for ' + month;
         tbody += '</td>';
         tbody += '</tr>';
