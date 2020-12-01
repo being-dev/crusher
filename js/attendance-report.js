@@ -1,8 +1,16 @@
+var attendanceTable = $('#attendanceTable').DataTable({
+    responsive: true,
+    destroy: true,
+    processing: true
+});
+
 $(function () {
     $('#teDiv').hide();
     $('#tpeDiv').hide();
     $('#taeDiv').hide();
     $('#empDetailsDiv').hide();
+
+    setMaxDate('txtSearchDate', $.datepicker.formatDate("yy-mm-dd", new Date()));
 });
 
 function fn_searchEmployee() {
@@ -16,11 +24,13 @@ function fn_searchEmployee() {
             data: JSON.stringify({ date: attendanceDate })
         }).done(function (response) {
             hideLoader();
-            var tbody = prepareTableBody(response.EMP_INFO, attendanceDate);
+            var table_data = buildTableData(response.EMP_INFO, attendanceDate);
+            attendanceTable.clear().draw();
+            attendanceTable.rows.add(table_data);
+            attendanceTable.draw();
             $('#te').html(response.TOTAL_CNT);
             $('#tpe').html(response.TP_CNT);
-            $('#tae').html(response.TA_CNT);
-            $('#attTbody').html(tbody);
+            $('#tae').html(response.TA_CNT);            
             $('#teDiv').show();
             $('#tpeDiv').show();
             $('#taeDiv').show();
@@ -34,6 +44,21 @@ function fn_searchEmployee() {
             buildAlert('message', error);
         });
     }
+}
+
+function buildTableData(employees, attendanceDate) {
+    var table_data = [];
+    $.each(employees, function (key, value) {
+        var status = undefined;
+        if (value.present) {
+            status = '<a href="javascript:void(0);" title="Present" alt="Present" class="btn btn-primary btn-circle"><i class="fas fa-check-circle"></i></a>';
+        } else {
+            status = '<a href="javascript:void(0);" title="Absent" alt="Absent" class="btn btn-danger btn-circle"><i class="fas fa-times-circle"></i></a>';
+        }
+        var data = [value.name, value.position, attendanceDate, status];
+        table_data.push(data);
+    });
+    return table_data;
 }
 
 function prepareTableBody(employees, attendanceDate) {
@@ -62,7 +87,7 @@ function prepareTableBody(employees, attendanceDate) {
     } else {
         tbody += '<tr>';
         tbody += '<td  colspan="4" class="text-center">';
-        tbody += 'No data available for '+attendanceDate;
+        tbody += 'No data available for ' + attendanceDate;
         tbody += '</td>';
         tbody += '</tr>';
     }
