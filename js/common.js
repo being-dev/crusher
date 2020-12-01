@@ -4,6 +4,7 @@ endPointsMap.set('AUTH_URI', '/login');
 endPointsMap.set('EMP_FIND_ALL_URI', '/api/v1/employee/list?action=FIND_ALL');
 endPointsMap.set('EMP_REMOVE_URI', '/api/v1/employee/remove?action=DELETE');
 endPointsMap.set('EMP_SAVE_URI', '/api/v1/employee/save?action=CREATE');
+endPointsMap.set('EMP_LOAD_DOC_URI', '/api/v1/employee/load-doc?action=LOADDOC');
 endPointsMap.set('EMP_UPDATE_URI', '/api/v1/employee/save?action=UPDATE');
 endPointsMap.set('GET_EMP_NAMES_URI', '/api/v1/employee/listnames?action=FINDNAMES');
 endPointsMap.set('FIND_EMP_URI', '/api/v1/employee/find?action=FIND');
@@ -13,8 +14,34 @@ endPointsMap.set('ADV_SAL_URI', '/api/v1/employee/salary/adv-salary?action=ADVSA
 endPointsMap.set('FULL_SAL_URI', '/api/v1/employee/salary/make-salary?action=MAKEPAYMENT');
 endPointsMap.set('ATT_REPORT_URI', '/api/v1/employee/attendance/list?action=ATTREPORT');
 endPointsMap.set('SAL_REPORT_URI', '/api/v1/employee/salary/list?action=SALREPORT');
+endPointsMap.set('SAL_DETAILS_URI', '/api/v1/employee/salary/list?action=FIND_ALL');
+
+const EMP_DET_KEY = 'EMP_INFO';
+
+const menus = [{ link: './manage-employee.html', text: 'Manage Employee', title: 'Manage Employee', alt: 'Manage Employee', icon: '<i class="fas fa-users"></i>', class: 'nav-link' },
+{ link: './manage-attendance.html', text: 'Attendance', title: 'Manage Attendance', alt: 'Manage Attendance', icon: '<i class="fas fa-calendar-alt"></i>', class: 'nav-link' },
+{ link: './manage-salary.html', text: 'Salary', title: 'Manage Salary', alt: 'Manage Salary', icon: '<i class="fas fa-rupee-sign"></i>', class: 'nav-link' },
+{ link: './advance-salary.html', text: 'Advance Salary', title: 'Manage Advance Salary', alt: 'Manage Advance Salary', icon: '<i class="fas fa-rupee-sign"></i>', class: 'nav-link' },
+{ link: './attendance-report.html', text: 'Attendance Report', title: 'Attendance Report', alt: 'Attendance Report', icon: '<i class="fas fa-chart-bar"></i>', class: 'nav-link' },
+{ link: './salary-report.html', text: 'Salary Report', title: 'Salary Report', alt: 'Salary Report', icon: '<i class="fas fa-chart-bar"></i>', class: 'nav-link' }]
 
 $(function () {
+    var menuHtml = '';
+    $.each(menus, function (key, value) {
+        var menu = '<a ';
+        menu += 'class="nav-link" ';
+        menu += 'href="' + value.link + '" ';
+        menu += 'alt="' + value.alt + '" ';
+        menu += 'title="' + value.title + '">';
+        menu += value.icon;
+        menu += '<span>';
+        menu += value.text;
+        menu += '</span>';
+        menu += '</a>';
+        menuHtml += menu;
+    });
+    fn_setHtml('menuItem', menuHtml);
+
     var url = window.location.pathname;
     if (url && (url != '/' && url.indexOf('index') == -1)) {
         authoriseUser();
@@ -116,6 +143,11 @@ function checkSalaryAndValidate(fieldName, fieldErrorElem, errorMessage) {
     return checkAndValidate(regEx, fieldName, fieldErrorElem, errorMessage);
 }
 
+function checkAmountAndValidate(fieldName, fieldErrorElem, errorMessage) {
+    var regEx = /^(\d{1,3})*(\d{1,3})?(\.\d{2})?$/;
+    return checkAndValidate(regEx, fieldName, fieldErrorElem, errorMessage);
+}
+
 function checkAndValidate(regEx, fieldName, fieldErrorElem, errorMessage) {
     var hasValidationError = false;
     var field = $('#' + fieldName);
@@ -151,7 +183,8 @@ function authoriseUser() {
 
 function fn_logout() {
     if (getToken()) {
-        window.localStorage.removeItem('access_token');
+        fn_removeLocalStorage('access_token');
+        fn_removeLocalStorage('EMP_INFO');
         window.location.replace('index.html');
     }
 }
@@ -162,4 +195,73 @@ function fn_setHtml(elem, html) {
 
 function fn_setVal(elem, val) {
     $('#' + elem).val(val);
+}
+
+function fn_putLocalStorage(key, data) {
+    window.localStorage.setItem(key, data);
+}
+
+function fn_getLocalStorage(key) {
+    return window.localStorage.getItem(key);
+}
+
+function fn_removeLocalStorage(key) {
+    window.localStorage.removeItem(key);
+}
+
+function fn_isLocalStorageEmpty(key) {
+    var data = fn_getLocalStorage(key);
+    return fn_isUndefined(data);
+}
+
+function fn_isUndefined(data) {
+    return data == undefined;
+}
+
+function setMinDate(fieldName, minDate) {
+    var dateElem = $('#' + fieldName);
+    dateElem.attr('min', minDate);
+}
+
+function setMaxDate(fieldName, maxDate) {
+    var dateElem = $('#' + fieldName);
+    dateElem.attr('max', maxDate);
+}
+
+function fn_loadEmployees() {
+    showLoader();
+    $.ajax({
+        url: buildUrl(endPointsMap.get('EMP_FIND_ALL_URI')),
+        type: 'POST'
+    }).done(function (response) {
+        hideLoader();
+        fn_putLocalStorage(EMP_DET_KEY, JSON.stringify(response));
+    }).fail(function (error) {
+        hideLoader();
+        buildAlert('message', response);
+    });
+}
+
+const mapToObj = m => {
+    return Array.from(m).reduce((obj, [key, value]) => {
+        obj[key] = value;
+        return obj;
+    }, {});
+};
+
+function fn_loadDocument(employee) {
+    $(".image-sec-cust").find('img').attr('src', '');
+    $.ajax({
+        url: buildUrl(endPointsMap.get('EMP_LOAD_DOC_URI')),
+        type: "POST",
+        data: JSON.stringify({ id: employee })
+    }).done(function (response, status, xhr) {
+        hideLoader();
+        if (response) {
+            $(".image-sec-cust").find('img').attr('src', 'data:image/png;base64,' + response);
+        }
+    }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
+        hideLoader();
+        buildAlert('modalMessage', XMLHttpRequest);
+    });
 }

@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>:: K.N.GHARAT :: SALARY REPORT</title>
+    <title>:: K.N.GHARAT :: ADVANCE PAYMENT </title>
 
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -17,6 +17,7 @@
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
 
+    <link rel="stylesheet" href="./css/jquery-ui.css">
     <!-- Custom styles for this template-->
     <link href="./css/crusher.css" rel="stylesheet">
 
@@ -27,12 +28,17 @@
     <!-- Core plugin JavaScript-->
     <script src="./vendor/jquery-easing/jquery.easing.min.js"></script>
 
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
     <!-- Page level plugins -->
     <script src="vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
     <!-- Custom scripts for all pages-->
     <script src="js/jquery.serializejson.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="./js/crusher.js"></script>
 
     <script src="./js/common.js"></script>
 
@@ -83,10 +89,11 @@
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
 
-                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-
                         <!-- Nav Item - Alerts -->
+
+
                         <!-- Nav Item - Messages -->
+
 
                         <div class="topbar-divider d-none d-sm-block"></div>
 
@@ -106,7 +113,6 @@
                                 </a>
                             </div>
                         </li>
-
                     </ul>
 
                 </nav>
@@ -115,133 +121,100 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
-                    <!-- Page Heading -->
+                    <!-- /.container-fluid -->
+                    <!-- Content Row -->
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="">
+                            <div class="card shadow">
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Salary Report</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Advance Salary</h6>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
                                     <div id="message"></div>
                                     <div class="form-group row">
-                                        <form
-                                            class="d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search col-md-3">
-                                            <div class="input-group">
-                                                <input type="month" id="txtSalaryDate" name="salaryDate"
-                                                    class="form-control bg-light border-1" placeholder="Salary Date"
-                                                    aria-label="Salary Date" aria-describedby="basic-addon2"
-                                                    autocomplete="off" required>
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-primary" type="button" onclick="fn_search()">
-                                                        <i class="fas fa-search fa-sm"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
+                                        <div class="col-md-3 col-sm-4 mb-3 mb-sm-0">
+                                            <input type="text" id="txtSearch" name="search" class="form-control"
+                                                placeholder="Search Position..." title="Search Position"
+                                                aria-label="Search" aria-describedby="Search Position"
+                                                autocomplete="off" required>
                                             <span id="search_field_error"></span>
-                                        </form>
+                                        </div>
+                                        <div class="col-md-1 col-sm-4 mb-3 mb-sm-0" id="">
+                                            <button class="btn btn-primary" type="button" onclick="fn_searchEmployee()"
+                                                title="Search">
+                                                <i class="fas fa-search fa-sm"></i>
+                                            </button>
+                                        </div>
+                                        <div class="col-md-3 col-sm-4 mb-3 mb-sm-0" id="salAmountDiv" hidden>
+                                            <input type="number" class="form-control" id="txtAmount" name="amount"
+                                                placeholder="Advance Amount" aria-describedby="Advance Amount"
+                                                autocomplete="off" required>
+                                            <span id="amount_field_error"></span>
+                                        </div>
+                                        <div class="col-md-2 col-sm-4 mb-3 mb-sm-0 custom-checkbox small"
+                                            id="amountCheckDiv" style="margin-top: 5px;" hidden>
+                                            <input type="checkbox" class="custom-control-input" id="txtCheckAll"
+                                                style="margin: 2px;position: initial;" onchange="fn_updateAmount()">
+                                            <label class="custom-control-label" for="txtCheckAll"
+                                                style="padding-top:4px;cursor: pointer;">Apply For All</label>
+                                        </div>
+                                    </div>
+                                    <div class="row" id="salButtons">
+                                        <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
+                                            <button type="button" class="btn btn-primary" title="Make Payment"
+                                                onclick="fn_process()"><i class="fas fa-rupee-sign"></i>&nbsp;Payment
+                                            </button>
+                                            <button type="button" class="btn btn-secondary" title="Cancel"
+                                                onclick="fn_cancel()"><i class="fas fa-ban"></i>&nbsp;Cancel
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive" id="tbEmpDetails">
+                                        <div class="">
+                                            <span id="tbadv_error_field"></span>
+                                        </div>
+                                        <table class="table table-bordered styled-table" width="100%" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th><input type="checkbox" id="textEmpSelectAll" name="empSelectAll"
+                                                            class="small" value="true" class=""
+                                                            onchange="fn_checkAll()"></th>
+                                                    <th>Name</th>
+                                                    <th>Current Salary&nbsp;(<i class="fas fa-rupee-sign">)</i></th>
+                                                    <th>Advance Salary&nbsp;(<i class="fas fa-rupee-sign">)</i></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="empDetails"></tbody>
+                                        </table>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
 
-                        <div class="col-xl-3 col-md-6 mb-4" id="totalamountDiv" hidden>
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Total Salary For Present Days</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalamount"></div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-rupee-sign fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xl-3 col-md-6 mb-4" id="advamountnDiv" hidden>
-                            <div class="card border-left-success shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                Total Advance Salary</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="advamount"></div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-rupee-sign fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xl-3 col-md-6 mb-4" id="netexpamountDiv" hidden>
-                            <div class="card border-left-danger shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                                Total Net Salary</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="netexpamount"></div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-rupee-sign fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
 
                     </div>
-
-                    <div class="" id="empSalDetailsDiv" hidden>
-                        <div class="table-responsive">
-                            <table class="table table-bordered styled-table" id="salaryTable" width="100%"
-                                cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Position</th>
-                                        <th>Current Salary</th>
-                                        <th>Daily Wages</th>
-                                        <th>Present Days</th>
-                                        <th>Salary For Present Days</th>
-                                        <th>Advance Salary</th>
-                                        <th>Net Salary</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody id="salInfoTbody"></tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- /.container-fluid -->
 
                 </div>
-                <!-- End of Main Content -->
 
-                <!-- Footer -->
-                <footer class="sticky-footer bg-white">
-                    <div class="container my-auto">
-                        <div class="copyright text-center my-auto">
-                            <span>Copyright &copy; Your Website 2020</span>
-                        </div>
-                    </div>
-                </footer>
-                <!-- End of Footer -->
 
             </div>
-            <!-- End of Content Wrapper -->
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; 2020</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
 
         </div>
+
         <!-- End of Page Wrapper -->
 
         <!-- Scroll to Top Button-->
@@ -250,12 +223,12 @@
         </a>
 
         <!-- Logout Modal-->
-        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Logout?</h5>
+                        <h5 class="modal-title" id="logoutModalLabel">Logout?</h5>
                         <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">×</span>
                         </button>
@@ -276,7 +249,8 @@
         <!-- Custom scripts for all pages-->
         <script src="./js/crusher.js"></script>
 
-        <script src="./js/salary-report.js"></script>
+        <script src="./js/advance-salary.js"></script>
+
 
 </body>
 
