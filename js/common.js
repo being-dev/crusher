@@ -250,7 +250,8 @@ const mapToObj = m => {
 };
 
 function fn_loadDocument(employee) {
-    $(".image-sec-cust").find('img').attr('src', '');
+    var imgElem = $(".image-sec-cust").find('img');
+    imgElem.attr('src', '');
     $.ajax({
         url: buildUrl(endPointsMap.get('EMP_LOAD_DOC_URI')),
         type: "POST",
@@ -258,7 +259,9 @@ function fn_loadDocument(employee) {
     }).done(function (response, status, xhr) {
         hideLoader();
         if (response) {
-            $(".image-sec-cust").find('img').attr('src', 'data:image/png;base64,' + response);
+            imgElem.attr('src', 'data:image/png;base64,' + response);
+        } else {
+            imgElem.attr('src', '../img/not-avail.png').height(200);
         }
     }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
         hideLoader();

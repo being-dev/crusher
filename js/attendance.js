@@ -9,6 +9,20 @@ $(function (event) {
         source: categories,
         select: function (event, ui) {
             selectCategory = ui.item;
+            fn_defaultPage();
+        }
+    });
+
+    $("#txtSearch").on('change', function (event) {
+        if ($(this).val().trim().length == 0) {
+            fn_defaultPage()
+        } else {
+            if ($.inArray($(this).val(), categories) == -1) {
+                selectCategory = undefined;
+                fn_defaultPage();
+            } else {
+                selectCategory.value = $(this).val();
+            }
         }
     });
 
@@ -19,6 +33,15 @@ $(function (event) {
     //setMinDate('txtAttDate','2020-11-27');
     setMaxDate('txtAttDate', $.datepicker.formatDate("yy-mm-dd", new Date()));
 });
+
+function fn_defaultPage() {
+    fn_toggleDetails(false);
+    $('input[type=checkbox][name=empSelectAll]').prop('checked', false);
+    $('#empDetails').html('');
+    $('#txtAttType').prop('selectedIndex', 0);
+    $('#txtAttDate').val('');
+}
+
 
 function fn_searchEmployee() {
     emptyAlert('message');
@@ -36,12 +59,15 @@ function fn_searchEmployee() {
         var employees = JSON.parse(fn_getLocalStorage(EMP_DET_KEY));
         for (var index in employees) {
             if (employees[index].type == selectCategory.value) {
+                var name = employees[index].first + ' ' + employees[index].last;
+                var empData = name + "(" + employees[index].type + ")";
                 tbody += '<tr>';
                 tbody += '<td>';
                 tbody += '<input type="checkbox" name="empId" value="' + employees[index].id + '">';
                 tbody += '</td>';
                 tbody += '<td>';
-                tbody += employees[index].first + ' ' + employees[index].last;
+                tbody += '<a href="javascript:void(0);" data-toggle="modal" data-target="#photoModal"';
+                tbody += ' title="View Photo" alt="View Photo" onclick="fn_viewPhoto(\'' + employees[index].id + '\',\'' + empData + '\')">' + name + '</a>';
                 tbody += '</td>';
                 tbody += '<td>';
                 tbody += employees[index].type;
@@ -67,8 +93,9 @@ function fn_checkAll() {
     $('input[type=checkbox][name=empId]').prop('checked', isSelectAll);
 }
 
-function fn_setEmployeeDetails(employee) {
-
+function fn_viewPhoto(employee, name) {
+    $('#photoLabel').html(name);
+    fn_loadDocument(employee);
 }
 
 function fn_resetSearchDetails() {
@@ -108,12 +135,12 @@ function fn_markIn() {
         hasValidationError = true;
         buildAlert('message', { responseText: 'Please select employee', status: 500 });
     }
- 
+
     if (!hasValidationError) {
         var date = $('#txtAttDate');
         if (date.val() == undefined || !date.val()) {
             date = $.datepicker.formatDate("yy-mm-dd", new Date());
-        }else {
+        } else {
             date = $.datepicker.formatDate("yy-mm-dd", new Date(date.val()));
         }
         attendanceRequest = { employees: employees, type: $('#txtAttType').val(), date: date };

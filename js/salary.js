@@ -28,8 +28,31 @@ $(function (event) {
         }
     });
 
+    $("#txtSearch").on('change', function (event) {
+        if ($(this).val().trim().length == 0) {
+            fn_defaultPage();
+        } else {
+            if ($.inArray($(this).val(), categories) == -1) {
+                selectCategory = undefined;
+                fn_defaultPage();
+            } else {
+                selectCategory.value = $(this).val();
+            }
+        }
+    });
+
     fn_toggleDetails(false);
 });
+
+function fn_defaultPage() {
+    fn_toggleDetails(false);
+    $('input[type=checkbox][name=empSelectAll]').prop('checked', false);
+    $('#empDetails').html('');
+    $('#txtSalMonth').val('');
+    $('#txtSalWeek').val('');
+    $('#salWeekDiv').hide();
+    $('#salMonthDiv').hide();
+}
 
 function fn_searchEmployee() {
     emptyAlert('message');

@@ -153,9 +153,11 @@ function fn_createEmployee() {
     if (!hasErrors) {
 
         var custPic = "";
-        if ($("#custPic-image").attr('src') != undefined && $("#custPic-image").attr('src') != "") {
+        if ($("#txtPhoto").val().trim().length > 0 && $("#custPic-image").attr('src') && $("#custPic-image").attr('src').trim().length > 0) {
             custPic = $("#custPic-image").attr('src').split(',')[1];
             formData["custPic"] = custPic;
+        } else {
+            formData["custPic"] = null;
         }
         showLoader();
         $.ajax({
@@ -186,7 +188,7 @@ function fn_updateEmployee() {
             formData["custPic"] = custPic;
         } else {
             formData["custPic"] = null;
-        }       
+        }
         showLoader();
         $.ajax({
             url: buildUrl(endPointsMap.get('EMP_UPDATE_URI')),

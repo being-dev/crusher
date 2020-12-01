@@ -11,16 +11,33 @@ $(function (event) {
         source: categories,
         select: function (event, ui) {
             selectCategory = ui.item;
-            fn_toggleDetails(false);
-            $('input[type=checkbox][name=txtCheckAll]').prop('checked', false);
-            $('input[type=checkbox][name=empSelectAll]').prop('checked', false);
-            $('#empDetails').html('');
-            fn_toggleDetails(false);
+            fn_defaultPage();
+        }
+    });
+
+    $("#txtSearch").on('change', function (event) {
+        if ($(this).val().trim().length == 0) {
+            fn_defaultPage();
+        } else {
+            if ($.inArray($(this).val(), categories) == -1) {
+                selectCategory = undefined;
+                fn_defaultPage();
+            } else {
+                selectCategory.value = $(this).val();
+            }
         }
     });
 
     fn_toggleDetails(false);
 });
+
+function fn_defaultPage() {
+    fn_toggleDetails(false);
+    $('input[type=checkbox][id=txtCheckAll]').prop('checked', false);
+    $('input[type=checkbox][name=empSelectAll]').prop('checked', false);
+    $('#empDetails').html('');
+    $('#txtAmount').val('');
+}
 
 function fn_searchEmployee() {
     emptyAlert('message');
@@ -87,7 +104,7 @@ function fn_toggleDetails(toggle) {
         $('#amountCheckDiv').show();
         $('#salButtons').show();
         $('#tbEmpDetails').show();
-        $('input[type=checkbox][name=txtCheckAll]').prop('checked', false);
+        $('input[type=checkbox][id=txtCheckAll]').prop('checked', false);
         $('input[type=checkbox][name=empSelectAll]').prop('checked', false);
     } else {
         $('#salAmountDiv').hide();
@@ -180,7 +197,7 @@ function fn_cancel() {
     fn_toggleDetails(false);
     blankEmployeeDetails();
     emptyAlert('message');
-    $('input[type=checkbox][name=txtCheckAll]').prop('checked', false);
+    $('input[type=checkbox][id=txtCheckAll]').prop('checked', false);
     $('input[type=checkbox][name=empSelectAll]').prop('checked', false);
 }
 
