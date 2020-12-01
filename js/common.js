@@ -262,7 +262,7 @@ function fn_loadDocument(employee) {
         if (response) {
             imgElem.attr('src', 'data:image/png;base64,' + response);
         } else {
-            imgElem.attr('src', '../img/not-avail.png').height(200);
+            imgElem.attr('src', './img/not-avail.png').height(200);
         }
     }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
         hideLoader();
