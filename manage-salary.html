@@ -17,7 +17,7 @@
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="./css/jquery-ui.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <!-- Custom styles for this template-->
     <link href="./css/crusher.css" rel="stylesheet">
 
@@ -59,7 +59,18 @@
             </li>
             <!-- Divider -->
             <hr class="sidebar-divider">
-            <li class="nav-item" id="menuItem"></li>
+            <li class="nav-item">
+                <a class="nav-link" href="./manage-employee.html" alt="Manage Employee" title="Manage Employee"><i
+                        class="fas fa-users"></i><span>Manage Employee</span></a>
+                <a class="nav-link" href="./manage-attendance.html" alt="Manage Timesheet" title="Manage Timesheet"><i
+                        class="fas fa-calendar-alt"></i><span>Timesheet</span></a>
+                <a class="nav-link" href="./manage-salary.html" alt="Manage Salary" title="Manage Salary"><i
+                        class="fas fa-rupee-sign"></i><span>Manage Salary</span></a>
+                <a class="nav-link" href="./attendance-report.html" alt="Attendance Report" title="Attendance Report"><i
+                        class="fas fa-chart-bar"></i><span>Attendance Report</span></a>
+                <a class="nav-link" href="./salary-report.html" alt="Salary Report" title="Salary Report"><i
+                        class="fas fa-chart-bar"></i><span>Salary Report</span></a>
+            </li>
 
             <!-- Divider -->
             <hr class="sidebar-divider">
@@ -102,7 +113,7 @@
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">ADMIN</span>
-                                <img class="img-profile rounded-circle" src="./img/user.png">
+                                <img class="img-profile rounded-circle" src="/img/user.png">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -135,63 +146,78 @@
                                 <div class="card-body">
                                     <div id="message"></div>
                                     <div class="form-group row">
-                                        <div class="col-md-3 col-sm-4 mb-3 mb-sm-0">
-                                            <!-- <label class="font-weight-bold" for="txtSearch">Search Category</label> -->
-                                            <!-- <div class="input-group-append"> -->
-                                            <input type="text" id="txtSearch" name="search" class="form-control"
-                                                placeholder="Search Position..." aria-label="Search"
-                                                aria-describedby="Search Position" autocomplete="off" required>                                           
+                                        <form
+                                            class="d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search col-md-4">
+                                            <div class="input-group">
+                                                <input type="text" id="txtSearch" name="search"
+                                                    class="form-control bg-light border-1"
+                                                    placeholder="Search employee..." aria-label="Search"
+                                                    aria-describedby="basic-addon2" autocomplete="off" required>
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-primary" type="button"
+                                                        onclick="fn_searchEmployee()">
+                                                        <i class="fas fa-search fa-sm"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
                                             <span id="search_field_error"></span>
-                                        </div>
-                                        <div class="col-md-2 col-sm-4 mb-3 mb-sm-0" id="salWeekDiv" hidden>
-                                            <!-- <label class="font-weight-bold" for="txtSalMonth">Salary Week</label> -->
-                                            <input type="date" class="form-control" id="txtSalWeek" name="date"
-                                                placeholder="Salary Week" aria-describedby="Salary Week"
-                                                autocomplete="off" required>
-                                            <span id="week_field_error"></span>
-                                        </div>
-                                        <div class="col-md-2 col-sm-4 mb-3 mb-sm-0" id="salMonthDiv" hidden>
-                                            <!-- <label class="font-weight-bold" for="txtSalMonth">Salary Month</label> -->
-                                            <input type="month" class="form-control" id="txtSalMonth" name="date"
-                                                placeholder="Salary Month" aria-describedby="Salary Month"
-                                                autocomplete="off" required>
-                                            <span id="month_field_error"></span>
-                                        </div>
-                                        <div class="col-md-1 col-sm-2 mb-2 mb-sm-0" id="">
-                                            <button class="btn btn-primary" type="button" onclick="fn_searchEmployee()"
-                                                title="Search">
-                                                <i class="fas fa-search fa-sm"></i>
-                                            </button>
-                                        </div>
-
-                                        <div class="col-md-4 col-sm-4 mb-3 mb-sm-0" id="salButtons">
-                                            <button type="button" class="btn btn-primary" title="Make Payment"
-                                                onclick="fn_process()"><i class="fas fa-rupee-sign"></i>&nbsp;Payment
-                                            </button>
-                                            <button type="button" class="btn btn-secondary" title="Cancel"
-                                                onclick="fn_cancel()"><i class="fas fa-ban"></i>&nbsp;Cancel
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="table-responsive" id="tbEmpDetails">
-                                        <table class="table table-bordered styled-table" width="100%" cellspacing="0">
-                                            <thead>
-                                                <tr>
-                                                    <th><input type="checkbox" id="textEmpSelectAll" name="empSelectAll"
-                                                            value="true" class="" onchange="fn_checkAll()"></th>
-                                                    <th>Name</th>
-                                                    <th>Current Salary</th>
-                                                    <th>Daily Wages</th>
-                                                    <th>Present Days</th>
-                                                    <th>Advance Salary</th>
-                                                    <th>Net Salary</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="empDetails"></tbody>
-                                        </table>
+                                        </form>
                                     </div>
                                 </div>
-
+                                <div class="card-body" id="empDetails" hidden>
+                                    <div class="form-group row">
+                                        <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
+                                            <label class="font-weight-bold">Employee Name</label>
+                                            <label class="form-control border-0" id="txtName"></label>
+                                        </div>
+                                        <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
+                                            <label class="font-weight-bold">Position</label>
+                                            <label class="form-control border-0" id="txtType"></label>
+                                        </div>
+                                        <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
+                                            <label class="font-weight-bold">Monthly Salary</label>
+                                            <label class="form-control border-0" id="txtSalary"></label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
+                                            <label class="font-weight-bold">Mobile No.</label>
+                                            <label class="form-control border-0" id="txtMobile"></label>
+                                        </div>
+                                        <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
+                                            <label class="font-weight-bold">Salary Type<span
+                                                    class="required">(*)</span></label>
+                                            <select class="form-control" id="txtSalaryType" name="type"
+                                                onchange="fn_showFields(true)" required>
+                                                <option value="">Select Salary Type</option>
+                                                <option value="ADV">Advance Salary</option>
+                                                <option value="FULL">Full Payment</option>
+                                            </select>
+                                            <span id="type_field_error"></span>
+                                        </div>
+                                        <div class="col-md-4 col-sm-4 mb-3 mb-sm-0" id="advDiv" hidden>
+                                            <label class="font-weight-bold">Advance Salary Amount<span
+                                                    class="required">(*)</span></label>
+                                            <input type="text" class="form-control" id="txtAdvSalary"
+                                                name="advanceSalary" placeholder="Salary Amount" maxlength="10"
+                                                autocomplete="off" required>
+                                            <span id="adv_salary_field_error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2 col-sm-6 mb-3 mb-sm-0">
+                                            <button type="button" class="btn btn-primary btn-user btn-block"
+                                                title="Mark In" onclick="fn_process()">Process
+                                            </button>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 mb-3 mb-sm-0">
+                                            <button type="button" class="btn btn-secondary btn-user btn-block"
+                                                title="Mark Out" onclick="fn_cancel()">Cancel
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="txtId" name="id" />
+                                </div>
                             </div>
                         </div>
 
@@ -202,16 +228,6 @@
 
             </div>
             <!-- End of Main Content -->
-
-            <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; 2020</span>
-                    </div>
-                </div>
-            </footer>
-            <!-- End of Footer -->
 
         </div>
 
