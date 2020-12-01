@@ -26,6 +26,7 @@
 
     <!-- Core plugin JavaScript-->
     <script src="./vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <!-- Page level plugins -->
     <script src="vendor/datatables/jquery.dataTables.min.js"></script>
@@ -143,6 +144,10 @@
                                             </div>
                                             <span id="search_field_error"></span>
                                         </form>
+                                        <div class="col-md-4 col-sm-4 mb-3 mb-sm-0" id="downloadDiv" hidden>
+                                            <button type="button" class="btn btn-danger" title="Download Report"
+                                                onclick="fn_downloadPDF()"><i class="fas fa-download"></i></button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -207,8 +212,7 @@
                                 cellspacing="0">
                                 <thead>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Position</th>
+                                        <th>Name</th>                                        
                                         <th>Current Salary</th>
                                         <th>Daily Wages</th>
                                         <th>Present Days</th>
@@ -275,8 +279,11 @@
 
         <!-- Custom scripts for all pages-->
         <script src="./js/crusher.js"></script>
-
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.6/jspdf.plugin.autotable.min.js"></script>
         <script src="./js/salary-report.js"></script>
+
 
 </body>
 

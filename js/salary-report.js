@@ -6,7 +6,6 @@ var salaryTable = $('#salaryTable').DataTable({
 });
 
 $(document).ready(function () {
-    //$('#salaryTable').DataTable();
     hideDivs();
 });
 
@@ -20,14 +19,11 @@ function fn_search() {
             type: 'POST',
             data: JSON.stringify({ date: attendanceDate })
         }).done(function (response) {
-            console.log(response);
             hideLoader();
             var table_data = buildTableData(response.EMP_SAL_INFO);
             salaryTable.clear().draw();
             salaryTable.rows.add(table_data);
-            salaryTable.draw();
-            //var tbody = prepareTableBody(response.EMP_SAL_INFO, attendanceDate);
-            //$('#salInfoTbody').html(tbody);
+            salaryTable.draw();           
             fn_setHtml('totalamount', response.PRE_DAY_SAL_EXPENSE);
             fn_setHtml('advamount', response.ADV_SAL_EXPENSE);
             fn_setHtml('netexpamount', response.NET_SAL_EXPENSE);
@@ -47,6 +43,7 @@ function showDivs() {
     $('#advamountnDiv').show();
     $('#netexpamountDiv').show();
     $('#empSalDetailsDiv').show();
+    $('#downloadDiv').show();
 }
 
 function hideDivs() {
@@ -54,12 +51,14 @@ function hideDivs() {
     $('#advamountnDiv').hide();
     $('#netexpamountDiv').hide();
     $('#empSalDetailsDiv').hide();
+    $('#downloadDiv').hide();
 }
 
 function buildTableData(salaries) {
     var table_data = [];
     $.each(salaries, function (key, value) {
-        var data = [value.name, value.position, value.currentSalary, value.dailyWages, value.presentDays, value.salary, value.advanceSalary, value.netSalary];
+        var name = value.name + '(' + value.position + ')';
+        var data = [name, value.currentSalary, value.dailyWages, value.presentDays, value.salary, value.advanceSalary, value.netSalary];
         table_data.push(data);
     });
     return table_data;
@@ -71,10 +70,7 @@ function prepareTableBody(salaries, month) {
         $.each(salaries, function (key, value) {
             tbody += '<tr>';
             tbody += '<td>';
-            tbody += value.name
-            tbody += '</td>';
-            tbody += '<td>';
-            tbody += value.position
+            tbody += value.name + '(' + value.position + ')';
             tbody += '</td>';
             tbody += '<td>';
             tbody += value.currentSalary;
@@ -105,4 +101,65 @@ function prepareTableBody(salaries, month) {
     }
 
     return tbody;
+}
+
+function fn_downloadPDF() {
+    var doc = new jsPDF('p', 'pt', 'a4');
+    var month = $('#txtSalaryDate').val();
+    var formattedDate = $.datepicker.formatDate('MM yy', new Date(month));
+    var pageHeight = 0;
+    pageHeight = doc.internal.pageSize.height;
+    specialElementHandlers = {
+        // element with id of "bypass" - jQuery style selector  
+        '#bypassme': function (element, renderer) {
+            // true = "handled elsewhere, bypass text extraction"  
+            return true
+        }
+    };
+    margins = {
+        top: 150,
+        bottom: 60,
+        left: 40,
+        right: 40,
+        width: 800
+    };
+    var y = 20;
+    doc.setLineWidth(2);
+    doc.setFontSize(10);
+    doc.text(200, y = y + 30, "SALARY REPORT - "+formattedDate);
+    doc.autoTable({
+        html: '#salaryTable',
+        startY: 70,
+        theme: 'striped',
+        columnStyles: {
+            0: {
+                cellWidth: 110,
+            },
+            1: {
+                cellWidth: 50,
+            },
+            2: {
+                cellWidth: 50,
+            },
+            3: {
+                cellWidth: 50,
+            },
+            4: {
+                cellWidth: 50,
+            },
+            5: {
+                cellWidth: 100,
+            },
+            6: {
+                cellWidth: 70,
+            },
+            7: {
+                cellWidth: 50,
+            }
+        },
+        styles: {
+            minCellHeight: 40
+        }
+    })
+    doc.save('SalaryReport.pdf');
 }

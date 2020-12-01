@@ -99,10 +99,10 @@ function hideLoader() {
 
 function buildUrl(endPoint) {
     var HTTP_PROTOCOL = "https://";
-    var SERVER = "pkctkbhawb";
+    var SERVER = "86cfs32wy9";
     var API = "execute-api";
     var REGION = "ap-southeast-1";
-    var STAGE = "prod";
+    var STAGE = "dev";
     var VENDOR = "amazonaws.com";
     var endPointUrl = HTTP_PROTOCOL;
     endPointUrl = endPointUrl.concat(SERVER).concat('.').concat(API).concat('.').concat(REGION).concat('.').concat(VENDOR);
