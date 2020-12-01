@@ -232,7 +232,8 @@ function fn_loadEmployees() {
     showLoader();
     $.ajax({
         url: buildUrl(endPointsMap.get('EMP_FIND_ALL_URI')),
-        type: 'POST'
+        type: 'POST',
+        async: false
     }).done(function (response) {
         hideLoader();
         fn_putLocalStorage(EMP_DET_KEY, JSON.stringify(response));

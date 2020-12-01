@@ -23,10 +23,12 @@ $(function (event) {
 });
 
 function loadEmployees() {
-    //showLoader();
+    showLoader();
     //_ajaxCallForEmployees();
     if (fn_isLocalStorageEmpty(EMP_DET_KEY)) {
         fn_loadEmployees();
+    } else {
+        hideLoader();
     }
 
     fn_refreshGrid();
@@ -35,6 +37,7 @@ function loadEmployees() {
 function fn_refreshGrid() {
     var employees = JSON.parse(fn_getLocalStorage(EMP_DET_KEY));
     var table_data = buildTableData(employees);
+    employeeDataTable.clear().draw();
     employeeDataTable.rows.add(table_data);
     employeeDataTable.draw();
 }
