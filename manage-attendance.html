@@ -17,11 +17,9 @@
     href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="./css/jquery-ui.css">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <!-- Custom styles for this template-->
   <link href="./css/crusher.css" rel="stylesheet">
-
-  <!-- <link href="./css/radio.css" rel="stylesheet" /> -->
 
   <!-- Bootstrap core JavaScript-->
   <script src="./vendor/jquery/jquery.min.js"></script>
@@ -58,7 +56,18 @@
       </li>
       <!-- Divider -->
       <hr class="sidebar-divider">
-      <li class="nav-item" id="menuItem"></li>
+      <li class="nav-item">
+        <a class="nav-link" href="./manage-employee.html" alt="Manage Employee" title="Manage Employee"><i
+            class="fas fa-users"></i><span>Manage Employee</span></a>
+        <a class="nav-link" href="./manage-attendance.html" alt="Manage Timesheet" title="Manage Timesheet"><i
+            class="fas fa-calendar-alt"></i><span>Timesheet</span></a>
+        <a class="nav-link" href="./manage-salary.html" alt="Manage Salary" title="Manage Salary"><i
+            class="fas fa-rupee-sign"></i><span>Manage Salary</span></a>
+        <a class="nav-link" href="./attendance-report.html" alt="Attendance Report" title="Attendance Report"><i
+            class="fas fa-chart-bar"></i><span>Attendance Report</span></a>
+        <a class="nav-link" href="./salary-report.html" alt="Salary Report" title="Salary Report"><i
+            class="fas fa-chart-bar"></i><span>Salary Report</span></a>
+      </li>
 
       <!-- Divider -->
       <hr class="sidebar-divider">
@@ -126,110 +135,126 @@
               <div class="card shadow">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">Employee Attendance</h6>
+                  <h6 class="m-0 font-weight-bold text-primary">Attendance Details</h6>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
                   <div id="message"></div>
                   <div class="form-group row">
-                    <div class="col-md-3 col-sm-4 mb-3 mb-sm-0">
-                      <label class="font-weight-bold" for="txtSearch">Search Category</label>
-                      <div class="input-group-append">
-                        <input type="text" id="txtSearch" name="search" class="form-control"
-                          placeholder="Search Position..." aria-label="Search" aria-describedby="Search Position"
-                          autocomplete="off" required>&nbsp;
-                        <button class="btn btn-primary" type="button" onclick="fn_searchEmployee()" title="Search">
-                          <i class="fas fa-search fa-sm"></i>
-                        </button>
+                    <form
+                      class="d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search col-md-4">
+                      <div class="input-group">
+                        <input type="text" id="txtSearch" name="search" class="form-control bg-light border-1"
+                          placeholder="Search employee..." aria-label="Search" aria-describedby="basic-addon2"
+                          autocomplete="off" required>
+                        <div class="input-group-append">
+                          <button class="btn btn-primary" type="button" onclick="fn_searchEmployee()">
+                            <i class="fas fa-search fa-sm"></i>
+                          </button>
+                        </div>
                       </div>
                       <span id="search_field_error"></span>
+                    </form>
+                  </div>
+                </div>
+                <div class="card-body" id="empDetails" hidden>
+                  <div class="form-group row">
+                    <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
+                      <label class="font-weight-bold">First Name</label>
+                      <label class="form-control" id="txtFirst"></label>
                     </div>
-                    <div class="col-md-2 col-sm-4 mb-3 mb-sm-0" id="typeDiv" hidden>
-                      <label class="font-weight-bold" for="txtAttType">Attendance Type</label>
-                      <select class="form-control" id="txtAttType" name="type" required>
-                        <option value="FD">FULL DAY</option>
-                        <option value="HD">HALF DAY</option>
-                      </select>
+                    <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
+                      <label class="font-weight-bold">Middle Name</label>
+                      <label class="form-control" id="txtMiddle"></label>
                     </div>
-                    <div class="col-md-2 col-sm-4 mb-3 mb-sm-0" id="attdateDiv" hidden>
-                      <label class="font-weight-bold" for="txtAttDate">Attendance Date</label>
-                      <input type="date" class="form-control" id="txtAttDate" name="date" placeholder="Attendance Date"
-                        aria-describedby="Attendance Date" autocomplete="off">
+                    <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
+                      <label class="font-weight-bold">Last Name</label>
+                      <label class="form-control" id="txtLast"></label>
                     </div>
-                    <div class="col-md-4 col-sm-4 mb-3 mb-sm-0" id="attButtons" hidden>
-                      <!-- <label class="font-weight-bold" for="txtAttDate">&nbsp;</label> -->
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
+                      <label class="font-weight-bold">Mobile No.</label>
+                      <label class="form-control" id="txtMobile"></label>
+                    </div>
+                    <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
+                      <label class="font-weight-bold">Birth Date</label>
+                      <label class="form-control" id="txtBirthDate"></label>
+                    </div>
+                    <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
+                      <label class="font-weight-bold">Age</label>
+                      <label class="form-control" id="txtAge"></label>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
+                      <label class="font-weight-bold">Position</label>
+                      <label class="form-control" id="txtType"></label>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
                       <button type="button" class="btn btn-success" title="Mark In" onclick="fn_markIn()">
                         <i class="fas fa-sign-in-alt"></i>&nbsp;Mark In
+                      </button>
+                      <button type="button" class="btn btn-danger" title="Mark Out" onclick="fn_markOut()">
+                        <i class="fas fa-sign-out-alt"></i>&nbsp;Mark Out
                       </button>
                       <button type="button" class="btn btn-secondary" title="Cancel" onclick="fn_cancel()">
                         <i class="fas fa-ban"></i>&nbsp;Cancel
                       </button>
                     </div>
                   </div>
-                  <div class="table-responsive" id="tbEmpDetails" hidden>
-                    <table class="table table-bordered styled-table" width="100%" cellspacing="0">
-                      <thead>
-                        <tr>
-                          <th><input type="checkbox" id="textEmpSelectAll" name="empSelectAll" value="true" class=""
-                              onchange="fn_checkAll()"></th>
-                          <th>Name</th>
-                          <th>Position</th>
-                        </tr>
-                      </thead>
-                      <tbody id="empDetails"></tbody>
-                    </table>
-                  </div>
+                  <input type="hidden" id="txtId" name="id" />
                 </div>
               </div>
             </div>
+
+          </div>
+
+        </div>
+
+
+      </div>
+      <!-- End of Main Content -->
+
+    </div>
+
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+      <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="logoutModalLabel">Logout?</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">Are you sure want to logout your current session?</div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <button class="btn btn-primary" type="button" onclick="fn_logout()">Logout</button>
           </div>
         </div>
-
-      </div>
-
-    </div>
-
-
-  </div>
-  <!-- End of Main Content -->
-
-  </div>
-
-  <!-- End of Page Wrapper -->
-
-  <!-- Scroll to Top Button-->
-  <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-  </a>
-
-  <!-- Logout Modal-->
-  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="logoutModalLabel">Logout?</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
-        <div class="modal-body">Are you sure want to logout your current session?</div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <button class="btn btn-primary" type="button" onclick="fn_logout()">Logout</button>
-        </div>
       </div>
     </div>
-  </div>
 
-  <div id="loading">
-    <div id="load" class="loader"></div>
-  </div>
+    <div id="loading">
+      <div id="load" class="loader"></div>
+    </div>
 
-  <!-- Custom scripts for all pages-->
-  <script src="./js/crusher.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="./js/crusher.js"></script>
 
-  <script src="js/attendance.js"></script>
+    <script src="js/attendance.js"></script>
 
 
 </body>

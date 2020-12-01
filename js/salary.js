@@ -1,198 +1,115 @@
-var selectCategory = undefined;
+var selectEmployee = undefined;
 emptyAlert('message');
 $(function (event) {
+    showLoader();
+    $.ajax({
+        url: buildUrl(endPointsMap.get('GET_EMP_NAMES_URI')),
+        type: 'POST'
+    }).done(function (response) {
+        hideLoader();
+        var employees = [];
+        $.each(response, function (k, v) {
+            var employee = { id: v.id, value: v.first + ' ' + v.middle + ' ' + v.last, category: v.type };
+            employees.push(employee);
+            $("#txtSearch").catcomplete({
+                source: employees,
+                select: function (event, ui) {
+                    selectEmployee = ui.item;
+                }
+            });
+        });
+    }).fail(function (error) {
+        hideLoader();
+        buildAlert('message', response);
+    });;
 
-    setMaxDate('txtSalMonth', $.datepicker.formatDate("yy-mm", new Date()));
-
-    if (fn_isLocalStorageEmpty(EMP_DET_KEY)) {
-        fn_loadEmployees();
-    }
-
-    var categories = ['Labour', 'Dealer', 'Helper', 'Driver', 'Operator', 'Engineer', 'Supervisor'];
-    $("#txtSearch").autocomplete({
-        source: categories,
-        select: function (event, ui) {
-            selectCategory = ui.item;
-            fn_toggleDetails(false);
-            $('input[type=checkbox][name=empSelectAll]').prop('checked', false);
-            $('#empDetails').html('');
-            if (selectCategory.value == 'Labour' || selectCategory.value == 'Dealer' || selectCategory.value == 'Helper') {
-                $('#salWeekDiv').show();
-                $('#salMonthDiv').hide();
-                $('#txtSalMonth').val('');
-            } else {
-                $('#salWeekDiv').hide();
-                $('#salMonthDiv').show();
-                $('#txtSalWeek').val('');
-            }
+    $.widget("custom.catcomplete", $.ui.autocomplete, {
+        _create: function () {
+            this._super();
+            this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+        },
+        _renderMenu: function (ul, items) {
+            var that = this,
+                currentCategory = "";
+            $.each(items, function (index, item) {
+                var li;
+                if (item.category != currentCategory) {
+                    ul.append("<li class='ui-autocomplete-category font-weight-bold'>" + item.category + "</li>");
+                    currentCategory = item.category;
+                }
+                li = that._renderItemData(ul, item);
+                if (item.category) {
+                    li.attr("aria-label", item.category + " : " + item.label);
+                }
+            });
         }
     });
-
-    fn_toggleDetails(false);
 });
 
 function fn_searchEmployee() {
     emptyAlert('message');
-    var salDate = undefined;
-    var hasValidationError = checkIfEmptyAndValidate('txtSearch', 'search_field_error', 'Please select employee category.');
-    if (!selectCategory) {
+    blankEmployeeDetails();
+    var hasValidationError = checkIfEmptyAndValidate('txtSearch', 'search_field_error', 'Please provide employee name.');
+    if (!selectEmployee) {
         hasValidationError = true;
         var field = $('#search_field_error');
-        buildError(field, 'Please select valid employee category.', true);
-    }
-    else if (!hasValidationError) {
-        if ($('#salWeekDiv').is(":visible")) {
-            hasValidationError = checkIfEmptyAndValidate('txtSalWeek', 'week_field_error', 'Please select salary week.');
-            if (!hasValidationError) {
-                salDate = $('#txtSalWeek').val();
-            }
-        }
-        else if ($('#salMonthDiv').is(":visible")) {
-            hasValidationError = checkIfEmptyAndValidate('txtSalMonth', 'month_field_error', 'Please select salary month.');
-            if (!hasValidationError) {
-                salDate = $('#txtSalMonth').val();
-            }
-        }
+        buildError(field, 'Please select valid employee name.', true);
     }
     if (!hasValidationError) {
         showLoader();
-        var employees = JSON.parse(fn_getLocalStorage(EMP_DET_KEY));
-        var empMap = new Map();
-        for (var index in employees) {
-            if (employees[index].type == selectCategory.value) {
-                empMap.set(employees[index].id, employees[index].salary);
-            }
-        }
-        var jsonObject = { date: salDate, type: selectCategory.value, salaryMap: mapToObj(empMap) };
-        var salDetails = undefined;
         $.ajax({
-            url: buildUrl(endPointsMap.get('SAL_DETAILS_URI')),
-            async: false,
+            url: buildUrl(endPointsMap.get('FIND_EMP_URI')),
             type: 'POST',
-            data: JSON.stringify(jsonObject)
+            data: JSON.stringify({ id: selectEmployee.id })
         }).done(function (response) {
             hideLoader();
-            salDetails = response;
+            setEmployeeDetails(response);
+            $('#empDetails').show();
         }).fail(function (error) {
             hideLoader();
+            $('#empDetails').hide();
             buildAlert('message', error);
         });
-        var tbody = '';
-        for (var index in employees) {
-            if (employees[index].type == selectCategory.value) {
-                var advSal = 0.0;
-                var presentDay = 0;
-                var dailyWages = 0.0;
-                var netSal = 0.0;
-                $.each(salDetails, function (key, value) {
-                    if (employees[index].id == key) {
-                        advSal = value.ADV_SAL;
-                        presentDay = value.PR_DAY;
-                        dailyWages = value.DAY_SAL;
-                        netSal = value.NET_SAL;
-                    }
-                });
-                tbody += '<tr>';
-                tbody += '<td>';
-                tbody += '<input type="checkbox" name="empId" value="' + employees[index].id + '">';
-                tbody += '</td>';
-                tbody += '<td>';
-                tbody += employees[index].first + ' ' + employees[index].last;
-                tbody += '</td>';
-                tbody += '<td>';
-                tbody += employees[index].salary;
-                tbody += '</td>';
-                tbody += '<td>';
-                tbody += dailyWages;
-                tbody += '</td>';
-                tbody += '<td>';
-                tbody += presentDay;
-                tbody += '</td>';
-                tbody += '<td>';
-                tbody += advSal;
-                tbody += '</td>';
-                tbody += '<td>';
-                tbody += netSal;
-                tbody += '</td>';
-                tbody += '</tr>';
-            }
-        }
-        if (!tbody || tbody.length == 0) {
-            tbody += '<tr>';
-            tbody += '<td colspan="6" class="text-center">';
-            tbody += 'No employee(s) details available';
-            tbody += '</td>';
-            tbody += '</tr>';
-        }
-        $('#empDetails').html(tbody);
-        fn_toggleDetails(true);
-        hideLoader();
     }
 }
 
 function setEmployeeDetails(employee) {
-
+    $('#txtId').val(employee.id);
+    $('#txtName').html(employee.first + ' ' + employee.middle + ' ' + employee.last);
+    $('#txtMobile').html(employee.mobileNo);
+    $('#txtType').html(employee.type);
+    $('#txtSalary').html(employee.salary);
 }
 
 function blankEmployeeDetails() {
-    $('#txtSearch').val('');
-    $('#txtSalMonth').val('');
-    $('#txtSalWeek').val('');
-    $('#empDetails').html('');
-
-    buildError($('#week_field_error'), undefined, false);
-    buildError($('#month_field_error'), undefined, false);
-}
-
-function fn_toggleDetails(toggle) {
-    if (toggle) {
-        $('#salButtons').show();
-        $('#tbEmpDetails').show();
-    } else {
-        $('#salButtons').hide();
-        $('#tbEmpDetails').hide();
-    }
-}
-
-function fn_checkAll() {
-    var isSelectAll = $('#textEmpSelectAll').is(':checked');
-    $('input[type=checkbox][name=empId]').prop('checked', isSelectAll);
+    $('#txtId').val('');
+    $('#txtName').html('');
+    $('#txtMobile').html('');
+    $('#txtSalary').html('');
+    $('#txtSalaryType').val('');
+    $('#txtAdvSalary').val('');
 }
 
 function fn_process() {
-    var hasValidationError = false;
-    var employees = [];
-    emptyAlert('message');
-
+    var hasValidationError = checkIfEmptyAndValidate('txtSalaryType', 'type_field_error', 'Please select type of Salary');
     if (!hasValidationError) {
-        if ($('#salWeekDiv').is(":visible")) {
-            hasValidationError = checkIfEmptyAndValidate('txtSalWeek', 'week_field_error', 'Please select salary week.');
-            if (!hasValidationError) {
-                salDate = $('#txtSalWeek').val();
-            }
-        }
-        else if ($('#salMonthDiv').is(":visible")) {
-            hasValidationError = checkIfEmptyAndValidate('txtSalMonth', 'month_field_error', 'Please select salary month.');
-            if (!hasValidationError) {
-                salDate = $('#txtSalMonth').val();
-            }
-        }
-    }
-
-    $.each($("input[name='empId']"), function () {
-        if ($(this).is(':checked')) {
-            employees.push(($(this).val()));
-        }
-    });
-    if (employees.length == 0) {
-        hasValidationError = true;
-        buildAlert('message', { responseText: 'Please select employee', status: 500 });
-    }
-
-    if (!hasValidationError) {
+        var advFieldVisible = fn_showFields(true);
+        var requestUrl = '';
         var jsonObject = {};
-        requestUrl = endPointsMap.get('FULL_SAL_URI');
-        jsonObject = { employees: employees, date: salDate };
+        if (advFieldVisible) {
+            //Make Advance Salary Payment
+            hasValidationError = checkIfEmptyAndValidate('txtAdvSalary', 'adv_salary_field_error', 'Please enter addvance salary amount.');
+            if (!hasValidationError) hasValidationError = checkSalaryAndValidate('txtAdvSalary', 'adv_salary_field_error', 'Please provide valid amount.');
+            if (!hasValidationError) {
+                requestUrl = endPointsMap.get('ADV_SAL_URI');
+                jsonObject = { employee: $('#txtId').val().trim(), advanceSalary: $('#txtAdvSalary').val().trim() };
+            }
+        } else {
+            //Make Full Salary Payment
+            requestUrl = endPointsMap.get('FULL_SAL_URI');
+            jsonObject = { employee: $('#txtId').val().trim() };
+        }
+
         if (!hasValidationError) {
             emptyAlert('message');
             showLoader();
@@ -214,13 +131,28 @@ function fn_process() {
     }
 }
 
+function fn_showFields(show) {
+    var salType = $('#txtSalaryType');
+    if (!show) {
+        $('#txtSearch').val('');
+        blankEmployeeDetails();
+        $('#advDiv').hide();
+    } else {
+        if (salType && salType.val().trim() == 'ADV') {
+            $('#advDiv').show();
+            return true;
+        } else {
+            $('#advDiv').hide();
+            return false;
+        }
+    }
+}
+
 function fn_cancel() {
+    $('#empDetails').hide();
     var field = $('#type_field_error');
     buildError(field, undefined, false);
-    fn_toggleDetails(false);
-    blankEmployeeDetails();
-    $('#salWeekDiv').hide();
-    $('#salMonthDiv').hide();
+    fn_showFields(false);
     emptyAlert('message');
 }
 
