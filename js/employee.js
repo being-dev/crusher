@@ -1,30 +1,81 @@
-var employees = [];
 var employeeDataTable = $('#employeesTable').DataTable({
     responsive: true,
     destroy: true,
-    processing: true,
+    processing: true
 });
+
+
+$(function (event) {
+    loadEmployees();
+    $('#btnSave').show();
+    $('#btnUpdate').hide();
+    //Remove any CSS class from message div
+    emptyAlert('modalMessage');
+});
+
 function loadEmployees() {
-    showLoader();
-    _ajaxCallForEmployees();
+    //showLoader();
+    //_ajaxCallForEmployees();
+    if (fn_isLocalStorageEmpty(EMP_DET_KEY)) {
+        fn_loadEmployees();
+    }
+
+    fn_refreshGrid();
+}
+
+function fn_refreshGrid() {
+    var employees = JSON.parse(fn_getLocalStorage(EMP_DET_KEY));
+    var table_data = buildTableData(employees);
+    employeeDataTable.rows.add(table_data);
+    employeeDataTable.draw();
+}
+
+function fn_updateEmployeeLocalItem(item) {
+    var localItems = JSON.parse(fn_getLocalStorage(EMP_DET_KEY));
+    var obj = JSON.parse(item);
+    var isFound = false;
+    var updateDetails = [];
+    $.each(localItems, function (key, value) {
+        if (obj.id == value.id) {
+            value.first = obj.first;
+            value.last = obj.last;
+            value.mobileNo = obj.mobileNo;
+            value.permanentAddress = obj.permanentAddress;
+            value.aadhar = obj.aadhar;
+            value.pan = obj.pan;
+            value.birthDate = obj.birthDate;
+            value.age = obj.age;
+            value.salary = obj.salary;
+            value.type = obj.type;
+        } else {
+            updateDetails.push(value);
+        }
+    });
+    if (!isFound) {
+        updateDetails.push(JSON.parse(item));
+    }
+    var table_data = buildTableData(updateDetails);
+    employeeDataTable.clear().draw();
+    employeeDataTable.rows.add(table_data);
+    employeeDataTable.draw();
+    fn_removeLocalStorage(EMP_DET_KEY);
+    fn_putLocalStorage(EMP_DET_KEY, JSON.stringify(updateDetails));
 }
 
 function _ajaxCallForEmployees() {
-    var alertBox = {};
     $.ajax({
         url: buildUrl(endPointsMap.get('EMP_FIND_ALL_URI')),
         type: 'POST'
     }).done(function (response) {
-        employees = response;
+        var employees = response;
+        fn_putLocalStorage(EMP_DET_KEY, JSON.stringify(response));
         var table_data = buildTableData(employees);
         employeeDataTable.rows.add(table_data);
         employeeDataTable.draw();
         hideLoader();
     }).fail(function (error) {
         hideLoader();
-        alertBox = handleAlert(error);
-        $('#message').addClass('alert').addClass(alertBox.class);
-        $('#message').html('<span>' + alertBox.message + '</span>');
+        buildAlert('message', error);
     });
 }
 
@@ -36,26 +87,17 @@ function buildTableData(response) {
         if (!value.middle) {
             value.middle = '';
         }
-        var data = [value.first + ' ' + value.middle + ' ' + value.last, value.type, value.permanentAddress, value.age, value.mobileNo, value.salary, updateBtn];
+        var data = [value.first + ' ' + value.last, value.type, value.residentialAddress, value.mobileNo, value.salary, updateBtn];
         table_data.push(data);
     });
     return table_data;
 }
 
-$(function (event) {
-    loadEmployees();
-    $('#btnSave').show();
-    $('#btnUpdate').hide();
-    //Remove any CSS class from message div
-    $('#modalMessage').removeClass();
-});
-
 function fn_addEmployee() {
     $('#employeeModalDialog').show();
     $('#btnSave').show();
     $('#btnUpdate').hide();
-    $('#modalMessage').removeClass();
-    $('#modalMessage').html('');
+    emptyAlert('modalMessage');
 }
 
 function fn_closeEmployeeDialog() {
@@ -63,13 +105,11 @@ function fn_closeEmployeeDialog() {
     $('#btnSave').show();
     $('#btnUpdate').hide();
     $('#employeeModalDialog').hide();
-    $('#modalMessage').removeClass();
-    $('#modalMessage').html('');
-    window.location.reload();
+    emptyAlert('modalMessage');
+    //window.location.reload();
 }
 
 function fn_remove(id) {
-    var alertBox = {};
     showLoader();
     $.ajax({
         url: buildUrl(endPointsMap.get('EMP_REMOVE_URI')),
@@ -78,13 +118,12 @@ function fn_remove(id) {
     }).done(function (response) {
     }).fail(function (error) {
         hideLoader();
-        alertBox = handleAlert(error);
-        $('#message').addClass('alert').addClass(alertBox.class);
-        $('#message').html('<span>' + alertBox.message + '</span>');
+        buildAlert('message', error);
     });;
 }
 
 function fn_modify(id) {
+    var employees = JSON.parse(fn_getLocalStorage(EMP_DET_KEY));
     $.each(employees, function (key, value) {
         if (id == value.id) {
             setFormFields(value);
@@ -93,61 +132,52 @@ function fn_modify(id) {
     $('#employeeModalDialog').show();
     $('#btnSave').hide();
     $('#btnUpdate').show();
-    $('#modalMessage').removeClass();
-    $('#modalMessage').html('');
+    emptyAlert('modalMessage');
 }
 
 function fn_createEmployee() {
+    emptyAlert('modalMessage');
     var formData = $('#frmEmployeeDetails').serializeJSON();
-    var alertBox = {};
     var hasErrors = validateForm();
     if (!hasErrors) {
         showLoader();
         $.ajax({
             url: buildUrl(endPointsMap.get('EMP_SAVE_URI')),
             type: "POST",
+            dataType: 'text',
             data: JSON.stringify(formData)
-        }).done(function (response) {
+        }).done(function (response, status, xhr) {
             hideLoader();
             resetErrorFields();
-            alertBox = handleAlert(response);
-            $('#modalMessage').addClass('alert').addClass(alertBox.class);
-            $('#modalMessage').html('<span>' + alertBox.message + '</span>');
-        }).fail(function (error) {
+            fn_updateEmployeeLocalItem(response);
+            buildAlert('message', { status: 200, responseText: 'Employee details has been saved successfully.' });
+            $('#employeeModalDialog').hide();
+        }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
             hideLoader();
-            alertBox = handleAlert(error);
-            $('#modalMessage').addClass('alert').addClass(alertBox.class);
-            $('#modalMessage').html('<span>' + alertBox.message + '</span>');
+            buildAlert('modalMessage', error);
         });
     }
 }
 
 function fn_updateEmployee() {
+    emptyAlert('modalMessage');
     var formData = $('#frmEmployeeDetails').serializeJSON();
-    var alertBox = {};
     var hasErrors = validateForm();
     if (!hasErrors) {
         showLoader();
         $.ajax({
             url: buildUrl(endPointsMap.get('EMP_UPDATE_URI')),
             type: "POST",
+            dataType: 'text',
             data: JSON.stringify(formData)
-        }).done(function (response) {
+        }).done(function (response, status, xhr) {
             hideLoader();
-            alertBox = handleAlert(response);
-            $('#modalMessage').addClass('alert').addClass(alertBox.class);
-            $('#modalMessage').html('<span>' + alertBox.message + '</span>');
-
-            //_ajaxCallForEmployees();
-
-            //$('#employeesTable').dataTable().fnClearTable();
-            //$('#employeesTable').dataTable().fnAddData(null);
-
-        }).fail(function (error) {
+            buildAlert('message', { status: 200, responseText: 'Employee details has been updated successfully.' });
+            $('#employeeModalDialog').hide();
+            fn_updateEmployeeLocalItem(response);
+        }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
             hideLoader();
-            alertBox = handleAlert(error);
-            $('#modalMessage').addClass('alert').addClass(alertBox.class);
-            $('#modalMessage').html('<span>' + alertBox.message + '</span>');
+            buildAlert('modalMessage', XMLHttpRequest);
         });
     }
 }
