@@ -53,18 +53,7 @@
       </li>
       <!-- Divider -->
       <hr class="sidebar-divider">
-      <li class="nav-item">
-        <a class="nav-link" href="./manage-employee.html" alt="Manage Employee" title="Manage Employee"><i
-            class="fas fa-users"></i><span>Manage Employee</span></a>
-        <a class="nav-link" href="./manage-attendance.html" alt="Manage Timesheet" title="Manage Timesheet"><i
-            class="fas fa-calendar-alt"></i><span>Timesheet</span></a>
-        <a class="nav-link" href="./manage-salary.html" alt="Manage Salary" title="Manage Salary"><i
-            class="fas fa-rupee-sign"></i><span>Manage Salary</span></a>
-        <a class="nav-link" href="./attendance-report.html" alt="Attendance Report" title="Attendance Report"><i
-            class="fas fa-chart-bar"></i><span>Attendance Report</span></a>
-        <a class="nav-link" href="./salary-report.html" alt="Salary Report" title="Salary Report"><i
-            class="fas fa-chart-bar"></i><span>Salary Report</span></a>
-      </li>
+      <li class="nav-item" id="menuItem"></li>
 
       <!-- Divider -->
       <hr class="sidebar-divider">
@@ -147,7 +136,6 @@
                           <th>Name</th>
                           <th>Position</th>
                           <th>Address</th>
-                          <th>Age</th>
                           <th>Moile No</th>
                           <th>Salary</th>
                           <th>Update</th>
@@ -182,10 +170,6 @@
       aria-hidden="true">
       <!-- Modal content -->
       <div class="modal-content">
-        <div class="modal-header">
-          <h3>Employee Details</h3>
-          <span class="close" onclick="fn_closeEmployeeDialog()">&times;</span>
-        </div>
         <div class="modal-body">
           <div class="card-body">
             <div id="modalMessage"></div>
@@ -198,42 +182,31 @@
                   <span id="first_field_error"></span>
                 </div>
                 <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
-                  <label class="font-weight-bold">Middle Name</label>
-                  <input type="text" class="form-control" id="txtMiddle" name="middle" placeholder="Middle Name"
-                    maxlength="25" autocomplete="off">
-                  <span id="middle_field_error"></span>
-                </div>
-                <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
                   <label class="font-weight-bold">Last Name<span class="required">(*)</span></label>
                   <input type="text" class="form-control" id="txtLast" name="last" placeholder="Last Name"
                     maxlength="25" autocomplete="off" required>
                   <span id="last_field_error"></span>
                 </div>
-              </div>
-              <div class="form-group row">
                 <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
                   <label class="font-weight-bold">Mobile No.<span class="required">(*)</span></label>
                   <input type="mobile" class="form-control" id="txtMobile" name="mobileNo" placeholder="Mobile No."
                     maxlength="15" autocomplete="off" required>
                   <span id="mobile_field_error"></span>
                 </div>
+              </div>
+              <div class="form-group row">
                 <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
-                  <!-- <div class="input-group-prepend">
-                            <span class="input-group-text" id="Birth Date">Birth Date</span>
-                        </div> -->
                   <label class="font-weight-bold">Birth Date<span class="required">(*)</span></label>
                   <input type="date" class="form-control" id="txtBirthDate" name="birthDate" placeholder="Birth Date"
                     aria-describedby="Birth Date" autocomplete="off" required>
                   <span id="birth_date_field_error"></span>
                 </div>
                 <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
-                  <label class="font-weight-bold">Age<span class="required">(*)</span></label>
-                  <input type="text" class="form-control" id="txtAge" name="age" placeholder="Age" maxlength="2"
-                    autocomplete="off" required>
-                  <span id="age_field_error"></span>
+                  <label class="font-weight-bold">Aadhar No.</label>
+                  <input type="text" class="form-control" id="txtAadhar" name="aadhar" placeholder="Aadhar No."
+                    maxlength="12" autocomplete="off">
+                  <span id="aadhar_field_error"></span>
                 </div>
-              </div>
-              <div class="form-group row">
                 <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
                   <label class="font-weight-bold">Employee Type<span class="required">(*)</span></label>
                   <select class="form-control" id="txtType" name="type" required>
@@ -248,39 +221,27 @@
                   </select>
                   <span id="type_field_error"></span>
                 </div>
-                <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
-                  <label class="font-weight-bold">Aadhar No.</label>
-                  <input type="text" class="form-control" id="txtAadhar" name="aadhar" placeholder="Aadhar No."
-                    maxlength="12" autocomplete="off">
-                  <span id="aadhar_field_error"></span>
-                </div>
-                <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
-                  <label class="font-weight-bold">PAN No.</label>
-                  <input type="text" class="form-control" id="txtPan" name="pan" placeholder="PAN No." maxlength="10"
-                    autocomplete="off">
-                  <span id="pan_field_error"></span>
-                </div>
               </div>
               <div class="form-group row">
                 <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
                   <label class="font-weight-bold">Employee Salary<span class="required">(*)</span></label>
-                  <input type="text" class="form-control" id="txtSalary" name="salary" placeholder="Salary"
+                  <input type="number" class="form-control" id="txtSalary" name="salary" placeholder="Salary"
                     maxlength="10" autocomplete="off" required>
                   <span id="salary_field_error"></span>
                 </div>
-              </div>
-              <div class="form-group row">
                 <div class="col-md-6 col-sm-6 mb-3 mb-sm-0">
-                  <label class="font-weight-bold">Residential Address<span class="required">(*)</span></label>
-                  <textarea class="form-control" id="txtResAdd" name="residentialAddress" rows="4"
+                  <label class="font-weight-bold">Address<span class="required">(*)</span></label>
+                  <textarea class="form-control" id="txtResAdd" name="residentialAddress" rows="2"
                     placeholder="Address..." autocomplete="no" required></textarea>
                   <span id="res_add_field_error"></span>
                 </div>
-                <div class="col-sm-6 mb-3 mb-sm-0">
-                  <label class="font-weight-bold">Permanent Address</label>
-                  <textarea class="form-control" id="txtPermAdd" name="permanentAddress" rows="4"
-                    placeholder="Address..." autocomplete="no"></textarea>
-                  <span id="perm_add_field_error"></span>
+              </div>
+              <div class="form-group row">
+                <div class="col-md-4 col-sm-4 mb-3 mb-sm-0">
+                  <label class="font-weight-bold">Profile Photo<span class="required">(*)</span></label>
+                  <input type="file" class="form-control" id="txtPhoto" name="photo" placeholder="Profile"
+                    maxlength="10" autocomplete="off">
+                  <span id="photo_field_error"></span>
                 </div>
               </div>
               <div class="row">
