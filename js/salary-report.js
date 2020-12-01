@@ -1,3 +1,10 @@
+
+var salaryTable = $('#salaryTable').DataTable({
+    responsive: true,
+    destroy: true,
+    processing: true
+});
+
 $(document).ready(function () {
     //$('#salaryTable').DataTable();
     hideDivs();
@@ -15,12 +22,16 @@ function fn_search() {
         }).done(function (response) {
             console.log(response);
             hideLoader();
-            var tbody = prepareTableBody(response.EMP_SAL_INFO, attendanceDate);
-            $('#salInfoTbody').html(tbody);
+            var table_data = buildTableData(response.EMP_SAL_INFO);
+            salaryTable.clear().draw();
+            salaryTable.rows.add(table_data);
+            salaryTable.draw();
+            //var tbody = prepareTableBody(response.EMP_SAL_INFO, attendanceDate);
+            //$('#salInfoTbody').html(tbody);
             fn_setHtml('totalamount', response.PRE_DAY_SAL_EXPENSE);
             fn_setHtml('advamount', response.ADV_SAL_EXPENSE);
             fn_setHtml('netexpamount', response.NET_SAL_EXPENSE);
-            
+
             showDivs();
 
         }).fail(function (error) {
@@ -43,6 +54,15 @@ function hideDivs() {
     $('#advamountnDiv').hide();
     $('#netexpamountDiv').hide();
     $('#empSalDetailsDiv').hide();
+}
+
+function buildTableData(salaries) {
+    var table_data = [];
+    $.each(salaries, function (key, value) {
+        var data = [value.name, value.position, value.currentSalary, value.dailyWages, value.presentDays, value.salary, value.advanceSalary, value.netSalary];
+        table_data.push(data);
+    });
+    return table_data;
 }
 
 function prepareTableBody(salaries, month) {
@@ -70,10 +90,10 @@ function prepareTableBody(salaries, month) {
             tbody += '</td>';
             tbody += '<td>';
             tbody += value.advanceSalary;
-            tbody += '</td>';  
+            tbody += '</td>';
             tbody += '<td>';
             tbody += value.netSalary;
-            tbody += '</td>';                      
+            tbody += '</td>';
             tbody += '</tr>';
         });
     } else {
