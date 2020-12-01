@@ -118,6 +118,7 @@ function fn_closeEmployeeDialog() {
     $('#btnUpdate').hide();
     $('#employeeModalDialog').hide();
     emptyAlert('modalMessage');
+    $("#custPic-image").attr('src','');
     //window.location.reload();
 }
 
