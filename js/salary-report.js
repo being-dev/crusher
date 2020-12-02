@@ -145,20 +145,17 @@ function fn_downloadPDF() {
                 cellWidth: 50,
             },
             4: {
-                cellWidth: 50,
+                cellWidth: 100,
             },
             5: {
-                cellWidth: 100,
+                cellWidth: 70,
             },
             6: {
                 cellWidth: 70,
-            },
-            7: {
-                cellWidth: 50,
             }
         },
         styles: {
-            minCellHeight: 40
+            minCellHeight: 30
         }
     })
     doc.save('SalaryReport.pdf');
