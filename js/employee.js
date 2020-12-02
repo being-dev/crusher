@@ -42,28 +42,36 @@ function fn_refreshGrid() {
     employeeDataTable.draw();
 }
 
-function fn_updateEmployeeLocalItem(item) {
+function fn_updateEmployeeLocalItem(item, isRemove) {
     var localItems = JSON.parse(fn_getLocalStorage(EMP_DET_KEY));
     var obj = JSON.parse(item);
     var isFound = false;
     var updateDetails = [];
     $.each(localItems, function (key, value) {
-        if (obj.id == value.id) {
-            value.first = obj.first;
-            value.last = obj.last;
-            value.mobileNo = obj.mobileNo;
-            value.permanentAddress = obj.permanentAddress;
-            value.aadhar = obj.aadhar;
-            value.pan = obj.pan;
-            value.birthDate = obj.birthDate;
-            value.age = obj.age;
-            value.salary = obj.salary;
-            value.type = obj.type;
+        if (isRemove) {
+            if (obj.id == value.id) {
+
+            } else {
+                updateDetails.push(value);
+            }
         } else {
-            updateDetails.push(value);
+            if (obj.id == value.id) {
+                value.first = obj.first;
+                value.last = obj.last;
+                value.mobileNo = obj.mobileNo;
+                value.permanentAddress = obj.permanentAddress;
+                value.aadhar = obj.aadhar;
+                value.pan = obj.pan;
+                value.birthDate = obj.birthDate;
+                value.age = obj.age;
+                value.salary = obj.salary;
+                value.type = obj.type;
+            } else {
+                updateDetails.push(value);
+            }
         }
     });
-    if (!isFound) {
+    if (!isFound && !isRemove) {
         updateDetails.push(JSON.parse(item));
     }
     var table_data = buildTableData(updateDetails);
@@ -94,12 +102,12 @@ function _ajaxCallForEmployees() {
 function buildTableData(response) {
     var table_data = [];
     $.each(response, function (key, value) {
-        //var removeBtn = '<buttton type="button" title="Remove" onclick="fn_remove(\'' + value.id + '\')"><i class="fas fa-trash-alt" aria-hidden="true"></i></button>';
-        var updateBtn = '<buttton type="button" title="Modify" onclick="fn_modify(\'' + value.id + '\')"><i class="fas fa-user-edit" aria-hidden="true"></i></button>';
+        var removeBtn = '<a href="javascript:void(0);" class="btn btn-danger" title="Remove" data-toggle="modal" data-target="#removeModal" onclick="fn_removeItem(\'' + value.id + '\')"><i class="fas fa-user-minus" aria-hidden="true"></i></a>';
+        var updateBtn = '<a href="javascript:void(0);" class="btn btn-primary" title="Modify" onclick="fn_modify(\'' + value.id + '\')"><i class="fas fa-user-edit" aria-hidden="true"></i></a>';
         if (!value.middle) {
             value.middle = '';
         }
-        var data = [value.first + ' ' + value.last, value.type, value.residentialAddress, value.mobileNo, value.salary, updateBtn];
+        var data = [value.first + ' ' + value.last, value.type, value.residentialAddress, value.mobileNo, value.salary, updateBtn, removeBtn];
         table_data.push(data);
     });
     return table_data;
@@ -118,21 +126,30 @@ function fn_closeEmployeeDialog() {
     $('#btnUpdate').hide();
     $('#employeeModalDialog').hide();
     emptyAlert('modalMessage');
-    $("#custPic-image").attr('src','');
-    //window.location.reload();
+    $("#custPic-image").attr('src', '');
 }
 
-function fn_remove(id) {
+var removeEmployee = undefined;
+function fn_removeItem(id) {
+    removeEmployee = id;
+}
+
+function fn_remove() {
     showLoader();
     $.ajax({
         url: buildUrl(endPointsMap.get('EMP_REMOVE_URI')),
         type: 'POST',
-        data: { id: id }
-    }).done(function (response) {
-    }).fail(function (error) {
+        dataType: 'text',
+        data: JSON.stringify({ id: removeEmployee }),
+    }).done(function (response, status, xhr) {
+        fn_updateEmployeeLocalItem(JSON.stringify({ id: removeEmployee }), true);
+        buildAlert('message', xhr);
+    }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
+        buildAlert('message', XMLHttpRequest);
+    }).always(function () {
+        $('#removeModal').modal('hide');
         hideLoader();
-        buildAlert('message', error);
-    });;
+    });
 }
 
 function fn_modify(id) {
@@ -172,7 +189,7 @@ function fn_createEmployee() {
         }).done(function (response, status, xhr) {
             hideLoader();
             resetErrorFields();
-            fn_updateEmployeeLocalItem(response);
+            fn_updateEmployeeLocalItem(response, false);
             buildAlert('message', { status: 200, responseText: 'Employee details has been saved successfully.' });
             $('#employeeModalDialog').hide();
         }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
@@ -203,7 +220,7 @@ function fn_updateEmployee() {
             hideLoader();
             buildAlert('message', { status: 200, responseText: 'Employee details has been updated successfully.' });
             $('#employeeModalDialog').hide();
-            fn_updateEmployeeLocalItem(response);
+            fn_updateEmployeeLocalItem(response, false);
         }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
             hideLoader();
             buildAlert('modalMessage', XMLHttpRequest);

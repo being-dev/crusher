@@ -123,7 +123,8 @@
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">Employees List</h6>
                   <div>
-                    <button class="btn btn-primary btn-user btn-block" onclick="fn_addEmployee()">Add</button>
+                    <button class="btn btn-primary btn-user btn-block" onclick="fn_addEmployee()"><i
+                        class="fas fa-user-plus"></i>&nbsp;Add</button>
                   </div>
                 </div>
                 <!-- Card Body -->
@@ -139,7 +140,7 @@
                           <th>Moile No</th>
                           <th>Salary</th>
                           <th>Update</th>
-                          <!-- <th>Remove</th> -->
+                          <th>Remove</th>
                         </tr>
                       </thead>
                     </table>
@@ -280,6 +281,26 @@
           </div>
         </div>
         <!-- <div class="modal-footer"></div> -->
+      </div>
+    </div>
+
+    <!-- Remove Confirmation Modal-->
+    <div class="modal fade" id="removeModal" tabindex="-1" role="dialog" aria-labelledby="removeModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="logoutModalLabel">Remove?</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">Are you sure want to remove employee?</div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal"><i class="fas fa-ban"></i>&nbsp;Cancel</button>
+            <button class="btn btn-danger" type="button" onclick="fn_remove()"><i class="fas fa-trash-alt"></i>&nbsp;Yes, I am sure</button>
+          </div>
+        </div>
       </div>
     </div>
 

@@ -90,66 +90,65 @@ function fn_searchEmployee() {
         var salDetails = undefined;
         $.ajax({
             url: buildUrl(endPointsMap.get('SAL_DETAILS_URI')),
-            async: false,
             type: 'POST',
             data: JSON.stringify(jsonObject)
         }).done(function (response) {
             hideLoader();
             salDetails = response;
+            var tbody = '';
+            for (var index in employees) {
+                if (employees[index].type == selectCategory.value) {
+                    var advSal = 0.0;
+                    var presentDay = 0;
+                    var dailyWages = 0.0;
+                    var netSal = 0.0;
+                    $.each(salDetails, function (key, value) {
+                        if (employees[index].id == key) {
+                            advSal = value.ADV_SAL;
+                            presentDay = value.PR_DAY;
+                            dailyWages = value.DAY_SAL;
+                            netSal = value.NET_SAL;
+                        }
+                    });
+                    tbody += '<tr>';
+                    tbody += '<td>';
+                    tbody += '<input type="checkbox" name="empId" value="' + employees[index].id + '">';
+                    tbody += '</td>';
+                    tbody += '<td>';
+                    tbody += employees[index].first + ' ' + employees[index].last;
+                    tbody += '</td>';
+                    tbody += '<td>';
+                    tbody += employees[index].salary;
+                    tbody += '</td>';
+                    tbody += '<td>';
+                    tbody += dailyWages;
+                    tbody += '</td>';
+                    tbody += '<td>';
+                    tbody += presentDay;
+                    tbody += '</td>';
+                    tbody += '<td>';
+                    tbody += advSal;
+                    tbody += '</td>';
+                    tbody += '<td>';
+                    tbody += netSal;
+                    tbody += '</td>';
+                    tbody += '</tr>';
+                }
+            }
+            if (!tbody || tbody.length == 0) {
+                tbody += '<tr>';
+                tbody += '<td colspan="6" class="text-center">';
+                tbody += 'No employee(s) details available';
+                tbody += '</td>';
+                tbody += '</tr>';
+            }
+            $('#empDetails').html(tbody);
+            fn_toggleDetails(true);
+
         }).fail(function (error) {
             hideLoader();
             buildAlert('message', error);
         });
-        var tbody = '';
-        for (var index in employees) {
-            if (employees[index].type == selectCategory.value) {
-                var advSal = 0.0;
-                var presentDay = 0;
-                var dailyWages = 0.0;
-                var netSal = 0.0;
-                $.each(salDetails, function (key, value) {
-                    if (employees[index].id == key) {
-                        advSal = value.ADV_SAL;
-                        presentDay = value.PR_DAY;
-                        dailyWages = value.DAY_SAL;
-                        netSal = value.NET_SAL;
-                    }
-                });
-                tbody += '<tr>';
-                tbody += '<td>';
-                tbody += '<input type="checkbox" name="empId" value="' + employees[index].id + '">';
-                tbody += '</td>';
-                tbody += '<td>';
-                tbody += employees[index].first + ' ' + employees[index].last;
-                tbody += '</td>';
-                tbody += '<td>';
-                tbody += employees[index].salary;
-                tbody += '</td>';
-                tbody += '<td>';
-                tbody += dailyWages;
-                tbody += '</td>';
-                tbody += '<td>';
-                tbody += presentDay;
-                tbody += '</td>';
-                tbody += '<td>';
-                tbody += advSal;
-                tbody += '</td>';
-                tbody += '<td>';
-                tbody += netSal;
-                tbody += '</td>';
-                tbody += '</tr>';
-            }
-        }
-        if (!tbody || tbody.length == 0) {
-            tbody += '<tr>';
-            tbody += '<td colspan="6" class="text-center">';
-            tbody += 'No employee(s) details available';
-            tbody += '</td>';
-            tbody += '</tr>';
-        }
-        $('#empDetails').html(tbody);
-        fn_toggleDetails(true);
-        hideLoader();
     }
 }
 
